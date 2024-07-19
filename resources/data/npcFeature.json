@@ -1,0 +1,44 @@
+{
+    "npcFeature": {
+        "CatlikeSpeech": {
+            "Type": "말투 변경",
+            "Feature": "냥체",
+            "Description": "말 끝에 '냥'을 붙여서 대답해야 함"
+        },
+        "MusicianSpeech": {
+            "Type": "말투 변경",
+            "Feature": "뮤지션",
+            "Description": "노래를 부르듯이 대답해야 함"
+        },
+        "WandererBackground": {
+            "Type": "배경 지정",
+            "Feature": "떠돌이",
+            "Description": "여러 마을을 떠돌아 다니는 떠돌이임"
+        },
+        "CollectorHabit": {
+            "Type": "행동 습관",
+            "Feature": "수집가",
+            "Description": "다양한 물건들을 수집하는 취미가 있음"
+        },
+        "QuietNature": {
+            "Type": "행동 습관",
+            "Feature": "조용함",
+            "Description": "대화보다는 관찰을 선호하며 적은 말로 의사를 표현함"
+        },
+        "NobleBackground": {
+            "Type": "배경 지정",
+            "Feature": "귀족 출신",
+            "Description": "고귀한 가문에서 태어나 귀족적인 행동을 함"
+        },
+        "OldStyleSpeech": {
+            "Type": "말투 변경",
+            "Feature": "고어체",
+            "Description": "옛날 양식의 말투를 사용하여 대화함"
+        },
+        "NocturnalHabit": {
+            "Type": "행동 습관",
+            "Feature": "야행성",
+            "Description": "밤에 활동하는 것을 선호하며 낮에는 거의 보이지 않음"
+        }
+    }
+}

@@ -1,0 +1,22 @@
+# Static
+static/
+
+# Environments
+**/.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Server log
+*.log
+
+# Files
+*.wav
+*.db
+
+# etc
+__pycache__/
+.pytest_cache/

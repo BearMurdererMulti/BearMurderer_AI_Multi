@@ -1,0 +1,6 @@
+uvicorn==0.26.0
+fastapi==0.109.0
+python-dotenv==1.0.0
+langchain==0.1.1
+langchain-openai==0.0.2.post1
+discord==2.3.2

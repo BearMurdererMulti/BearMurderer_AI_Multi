@@ -1,0 +1,52 @@
+{
+    "npcPersonality": {
+        "Friendly": {
+            "Personality": "친근함",
+            "Description": "다른 사람들과 쉽게 친해지며 상냥함"
+        },
+        "Brave": {
+            "Personality": "용감함",
+            "Description": "두려움을 알지만 용기 있게 행동함"
+        },
+        "Wise": {
+            "Personality": "지혜로움",
+            "Description": "깊은 통찰력과 현명한 판단을 가짐"
+        },
+        "Mysterious": {
+            "Personality": "신비로움",
+            "Description": "알 수 없는 매력과 비밀스러운 분위기를 가짐"
+        },
+        "Cheerful": {
+            "Personality": "명랑함",
+            "Description": "밝고 긍정적인 에너지로 주변을 환하게 함"
+        },
+        "Cunning": {
+            "Personality": "교활함",
+            "Description": "기민하고 때로는 속임수를 쓰며 목적을 달성함"
+        },
+        "Adventurous": {
+            "Personality": "모험적임",
+            "Description": "새로운 것을 경험하려는 강한 욕구를 가짐"
+        },
+        "Reserved": {
+            "Personality": "조용함",
+            "Description": "말보다는 행동으로 표현하며 신중함"
+        },
+        "Arrogant": {
+            "Personality": "오만함",
+            "Description": "자만심이 강하고 타인을 깔보는 경향이 있음"
+        },
+        "Envious": {
+            "Personality": "질투심",
+            "Description": "다른 사람의 성공이나 소유를 부러워함"
+        },
+        "Deceitful": {
+            "Personality": "속임수",
+            "Description": "거짓말을 하고 속이는 데 능숙함"
+        },
+        "Cowardly": {
+            "Personality": "겁쟁이",
+            "Description": "쉽게 두려워하고 위험을 피하는 경향이 있음"
+        }
+    }
+}
