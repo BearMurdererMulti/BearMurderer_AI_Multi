@@ -5,6 +5,11 @@ name = "pypi"
 
 [packages]
 fastapi-slim = "*"
+uvicorn = "*"
+langchain-openai = "*"
+langchain = "*"
+langchain-community = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

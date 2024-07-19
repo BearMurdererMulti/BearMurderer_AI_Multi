@@ -1,7 +1,7 @@
 import random
 
-from domain.scenario.schema import scenario_crud_schema
-from lib import const
+from .schema import scenario_crud_schema
+from app.lib import const
 
 characters_data = scenario_crud_schema.CharactersSchema(**const.CHARACTERS)
 place_data = scenario_crud_schema.PlacesSchema(**const.PLACES)

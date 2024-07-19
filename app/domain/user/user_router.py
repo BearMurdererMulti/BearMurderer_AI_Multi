@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from typing import Optional, List
 
-from domain.user import user_crud
-from domain.user.schema import user_router_schema
-from LLMs.langchain import generator
-from lib.validation_check import check_openai_api_key
+from app.LLMs.langchain import generator
+from app.lib.validation_check import check_openai_api_key
+from .schema import user_router_schema
+from . import user_crud
 
 
 router = APIRouter(

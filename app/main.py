@@ -1,14 +1,9 @@
 from fastapi import FastAPI
 import uvicorn
-import asyncio
 
-from app.middleware import CustomMiddleware
-from domain.user import user_router
-from domain.scenario import scenario_router
-from domain.etc import etc_router
-
-from discord_bot.discord_bot import run
-from lib.logging_config import configure_logging
+from app.domain.user import user_router
+from app.domain.scenario import scenario_router
+from app.domain.etc import etc_router
 
 
 description = """
@@ -42,19 +37,6 @@ app = FastAPI(
     },
     openapi_tags=tags_metadata
 )
-
-
-@app.on_event("startup")
-async def startup_event():
-    # Configure logging on startup
-    configure_logging()
-
-
-# Adding middleware for additional request/response processing
-# app.add_middleware(CustomMiddleware)
-
-# Starting Discord bot asynchronously
-# asyncio.create_task(run())
 
 # Including API routers
 app.include_router(user_router.router)

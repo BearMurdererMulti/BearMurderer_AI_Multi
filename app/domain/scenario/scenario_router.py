@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from typing import Optional, List 
 
-from domain.scenario import scenario_crud
-from domain.scenario.schema import scenario_router_schema
-from LLMs.langchain import generator
-from lib.validation_check import check_openai_api_key
+from . import scenario_crud
+from .schema import scenario_router_schema
+from app.LLMs.langchain import generator
+from app.lib.validation_check import check_openai_api_key
 
 router = APIRouter(
     prefix="/api/scenario",

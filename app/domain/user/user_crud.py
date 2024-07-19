@@ -1,5 +1,5 @@
-from domain.user.schema import user_crud_schema
-from lib import const
+from .schema import user_crud_schema
+from app.lib import const
 
 characters_data = user_crud_schema.CharactersSchema(**const.CHARACTERS)
 place_data = user_crud_schema.PlacesSchema(**const.PLACES)

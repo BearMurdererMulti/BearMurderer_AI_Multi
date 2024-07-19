@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 
-from domain.etc import etc_schema
-from lib.validation_check import check_openai_api_key
+from . import etc_schema
+from app.lib.validation_check import check_openai_api_key
 
 router = APIRouter(
     prefix="/api/etc",
