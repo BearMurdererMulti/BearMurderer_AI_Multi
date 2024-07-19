@@ -2,7 +2,7 @@ from fastapi import FastAPI
 import uvicorn
 import asyncio
 
-from middleware import CustomMiddleware
+from app.middleware import CustomMiddleware
 from domain.user import user_router
 from domain.scenario import scenario_router
 from domain.etc import etc_router

@@ -1,0 +1,30 @@
+# .git
+.git 
+.gitignore
+.github
+
+# cache
+.cache 
+__pycache__/
+.pytest_cache/
+
+# dockerfiles
+Dockerfile
+.dockerignore
+
+# security
+.env
+
+# files
+docs/
+static/
+*.jpg
+*.png
+*.jpeg
+*.pt
+*.onnx
+*.db
+
+# etc
+*.zip
+*.md
