@@ -3,8 +3,8 @@ from typing import Optional, List
 
 from ..services import scenario_service
 from ..schemas import scenario_router_schema
-from app.LLMs.langchain import generator
-from app.lib.validation_check import check_openai_api_key
+from ..langchain import generator
+from ..lib.validation_check import check_openai_api_key
 
 router = APIRouter(
     prefix="/api/scenario",

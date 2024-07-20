@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from typing import Optional, List
 
-from ..LLMs.langchain import generator
+from ..langchain import generator
 from ..lib.validation_check import check_openai_api_key
 from ..schemas import user_router_schema
 from ..services import user_service
