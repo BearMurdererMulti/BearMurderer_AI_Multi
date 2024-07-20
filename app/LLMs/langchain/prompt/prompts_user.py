@@ -1,5 +1,5 @@
-from LLMs.langchain.prompt.prompts_data import prompt_template
-from LLMs.langchain.prompt import prompts_schema
+from .prompts_data import prompt_template
+from . import prompts_schema
 
 
 conversation_with_user_chain_prefix = """

@@ -1,7 +1,7 @@
 import random
 
-from domain.scenario.schema import scenario_crud_schema
-from lib import const
+from ..schemas import scenario_crud_schema
+from ..lib import const
 
 characters_data = scenario_crud_schema.CharactersSchema(**const.CHARACTERS)
 place_data = scenario_crud_schema.PlacesSchema(**const.PLACES)
@@ -9,14 +9,14 @@ place_data = scenario_crud_schema.PlacesSchema(**const.PLACES)
 
 def get_character_info(name: str):
     """
-    Retrieve information for a character by name.
-    If the character does not exist, returns None.
+    캐릭터 이름으로 캐릭터 정보를 가져옵니다.
+    캐릭터가 존재하지 않으면 None을 반환합니다.
 
     Args:
-        name (str): The name of the character to find.
+        name (str): 찾고자 하는 캐릭터의 이름.
 
     Returns:
-        Character object or None if not found.
+        캐릭터 객체 또는 찾지 못한 경우 None.
     """
     for character in characters_data.npcs:
         if character.name == name:
@@ -25,14 +25,14 @@ def get_character_info(name: str):
 
 def get_character_criminal_scenario(name: str):
     """
-    Fetch criminal scenario details for a given character by name.
-    If no matching character is found, returns None.
+    주어진 이름의 캐릭터에 대한 범죄 시나리오 세부 정보를 가져옵니다.
+    일치하는 캐릭터를 찾지 못한 경우 None을 반환합니다.
 
     Args:
-        name (str): The name of the character whose criminal scenario is sought.
+        name (str): 범죄 시나리오를 찾고자 하는 캐릭터의 이름.
 
     Returns:
-        CriminalScenario object or None if not found.
+        CriminalScenario 객체 또는 찾지 못한 경우 None.
     """
     for character in characters_data.npcs:
         if character.name == name:
@@ -41,26 +41,26 @@ def get_character_criminal_scenario(name: str):
 
 def select_crime_scene(place_data: list):
     """
-    Randomly selects a crime scene from a list of possible places.
+    가능한 장소 목록에서 무작위로 범죄 현장을 선택합니다.
 
     Args:
-        place_data (list): Data structure containing potential crime scenes.
+        place_data (list): 잠재적인 범죄 현장이 포함된 데이터 구조.
 
     Returns:
-        A randomly selected Place object.
+        무작위로 선택된 Place 객체.
     """
     return random.choice(place_data)
 
 def select_random_character(candidates: list, excluded_characters: list):
     """
-    Selects a random character from a list, excluding specified characters.
+    지정된 캐릭터를 제외하고 목록에서 무작위로 캐릭터를 선택합니다.
 
     Args:
-        candidates (list): List of candidate Characters to select from.
-        excluded_characters (list): List of character names to exclude from selection.
+        candidates (list): 선택할 후보 캐릭터 목록.
+        excluded_characters (list): 선택에서 제외할 캐릭터 이름 목록.
 
     Returns:
-        A randomly selected Character object, or None if no valid characters are found.
+        무작위로 선택된 Character 객체 또는 유효한 캐릭터가 없는 경우 None.
     """
     filtered_candidates = [character.name for character in candidates if character.name not in excluded_characters]
 
@@ -72,14 +72,14 @@ def select_random_character(candidates: list, excluded_characters: list):
 
 def get_characters_info(candidates: list, excluded_characters: list):
     """
-    Retrieves information for a list of characters, excluding specified characters.
+    지정된 캐릭터를 제외하고 캐릭터 목록에 대한 정보를 가져옵니다.
 
     Args:
-        candidates (list): List of candidate Characters for retrieving information.
-        excluded_characters (list): List of character names to exclude from the retrieval.
+        candidates (list): 정보 가져올 후보 캐릭터 목록.
+        excluded_characters (list): 가져오기를 제외할 캐릭터 이름 목록.
 
     Returns:
-        List of Character objects with detailed information, excluding the specified characters.
+        지정된 캐릭터를 제외한 상세 정보를 가진 Character 객체 목록.
     """
     names = [character.name for character in candidates if character.name not in excluded_characters]
 
@@ -92,13 +92,13 @@ def get_characters_info(candidates: list, excluded_characters: list):
 
 def validate_living_characters(living_characters):
     """
-    Validates that all characters in the living characters list exist in the characters data.
+    생존 캐릭터 목록에 있는 모든 캐릭터가 캐릭터 데이터에 존재하는지 확인합니다.
 
     Args:
-        living_characters (list): List of character names to validate.
+        living_characters (list): 확인할 캐릭터 이름 목록.
 
     Returns:
-        bool: True if all characters exist, False otherwise.
+        bool: 모든 캐릭터가 존재하면 True, 그렇지 않으면 False.
     """
     living_characters_names = [character.name for character in living_characters]
     for character_name in living_characters_names:
@@ -108,13 +108,14 @@ def validate_living_characters(living_characters):
 
 def translate_place_name_ko_to_en(place_list: list, ko_name: str):
     """
-    Checks if all provided characters exist.
+    제공된 장소 이름의 한국어를 영어로 번역합니다.
 
     Args:
-        living_characters (object): Characters to validate.
+        place_list (list): 장소 목록.
+        ko_name (str): 번역할 장소의 한국어 이름.
 
     Returns:
-        bool: True if all exist, False otherwise.
+        영어 이름 또는 찾지 못한 경우 "Not Found".
     """
     for place in place_list:
         if place.placeNameKo == ko_name:
@@ -125,14 +126,14 @@ def translate_place_name_ko_to_en(place_list: list, ko_name: str):
 # IO
 def generate_victim_input(victim_generation_data):
     """
-    Generates input data required for victim generation in both JSON format and Pydantic model format.
-    Validates the existence of characters involved and selects random characters for victim and witness roles.
+    피해자 생성을 위해 필요한 입력 데이터를 JSON 형식과 Pydantic 모델 형식으로 생성합니다.
+    관련된 캐릭터의 존재 여부를 확인하고 피해자와 목격자 역할을 위한 무작위 캐릭터를 선택합니다.
 
     Args:
-        victim_generation_data (object): Data structure containing information for victim generation.
+        victim_generation_data (object): 피해자 생성에 필요한 정보를 포함하는 데이터 구조.
 
     Returns:
-        Tuple containing input data in JSON format and Pydantic model format, or (None, None) if validation fails.
+        JSON 형식 및 Pydantic 모델 형식의 입력 데이터 튜플 또는 검증 실패 시 (None, None).
     """
     muderer_info = get_character_criminal_scenario(victim_generation_data.murderer)
 
@@ -170,15 +171,15 @@ def generate_victim_input(victim_generation_data):
 
 def generate_victim_output(answer, input_data, origin_data):
     """
-    Processes the results of the victim generation scenario, producing output data in JSON format.
+    피해자 생성 시나리오 결과를 처리하여 JSON 형식의 출력 데이터를 생성합니다.
 
     Args:
-        answer (object): The output from the victim generation process.
-        input_data (object): The input data used for generating the scenario.
-        origin_data (object): The original data structure containing characters' information.
+        answer (object): 피해자 생성 프로세스의 출력.
+        input_data (object): 시나리오 생성을 위해 사용된 입력 데이터.
+        origin_data (object): 캐릭터 정보를 포함하는 원본 데이터 구조.
 
     Returns:
-        JSON formatted output data based on the scenario generation results.
+        시나리오 생성 결과를 기반으로 한 JSON 형식의 출력 데이터.
     """
     game_npc_no_mapping = {character.name : character.gameNpcNo for character in origin_data.livingCharacters}
 
@@ -204,17 +205,15 @@ def generate_victim_output(answer, input_data, origin_data):
 
 def generate_final_words_input(final_words_generation_data):
     """
-    Prepares input data for final words generation in a game scenario. It checks for the murderer's criminal
-    scenario details and constructs input data in JSON and Pydantic model formats. If the murderer's details
-    are missing, it returns (None, None) to signal failure.
+    게임 시나리오에서 마지막 말을 생성하기 위한 입력 데이터를 준비합니다.
+    살인자의 범죄 시나리오 세부 정보를 확인하고 JSON 및 Pydantic 모델 형식으로 입력 데이터를 구성합니다.
+    살인자의 세부 정보가 누락된 경우, (None, None)을 반환하여 실패를 신호합니다.
 
     Args:
-        final_words_generation_data (object): Contains information for final words generation, including the
-                                               murderer's name, game result, and previous story.
+        final_words_generation_data (object): 살인자의 이름, 게임 결과, 이전 이야기 등을 포함한 마지막 말 생성 정보를 포함하는 객체.
 
     Returns:
-        Tuple (input_data_json, input_data_pydantic): JSON and Pydantic formatted data for final words generation,
-                                                      or (None, None) if critical information is missing.
+        최종 말 생성용 JSON 및 Pydantic 형식의 데이터 튜플 또는 중요한 정보가 누락된 경우 (None, None).
     """
     muderer_info = get_character_criminal_scenario(final_words_generation_data.murderer)
     if not muderer_info:

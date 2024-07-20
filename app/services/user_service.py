@@ -1,5 +1,5 @@
-from domain.user.schema import user_crud_schema
-from lib import const
+from ..schemas import user_crud_schema
+from ..lib import const
 
 characters_data = user_crud_schema.CharactersSchema(**const.CHARACTERS)
 place_data = user_crud_schema.PlacesSchema(**const.PLACES)
@@ -7,13 +7,13 @@ place_data = user_crud_schema.PlacesSchema(**const.PLACES)
 
 def get_character_info(name):
     """
-    Retrieves character information by name from the loaded character data.
+    로드된 캐릭터 데이터에서 이름으로 캐릭터 정보를 가져옵니다.
 
     Args:
-        name (str): Name of the character to retrieve information for.
+        name (str): 정보를 가져올 캐릭터의 이름.
 
     Returns:
-        Character object if found, otherwise None.
+        찾은 경우 캐릭터 객체, 그렇지 않으면 None.
     """
     for character in characters_data.npcs:
         if character.name == name:
@@ -22,13 +22,13 @@ def get_character_info(name):
 
 def format_previous_chat_contents(conversation_user_schema):
     """
-    Formats previous chat contents for a given conversation schema, limiting to the most recent entries as defined by MAX_CHAT_CONTENTS.
+    주어진 대화 스키마에 대해 이전 채팅 내용을 형식화하며, MAX_CHAT_CONTENTS로 정의된 가장 최근 항목들로 제한합니다.
 
     Args:
-        conversation_user_schema (object): The conversation schema containing previous chat contents.
+        conversation_user_schema (object): 이전 채팅 내용을 포함하는 대화 스키마.
 
     Returns:
-        List of dictionaries with formatted chat content, including sender type, name, and content.
+        보낸 사람 유형, 이름 및 내용을 포함하는 사전 형식의 채팅 내용 목록.
     """
     formatted_chat_contents = []
     for chat_content in conversation_user_schema.previousChatContents[-const.MAX_CHAT_CONTENTS:]:
@@ -42,13 +42,13 @@ def format_previous_chat_contents(conversation_user_schema):
 
 def validate_npc_names(living_characters):
     """
-    Validates that all characters in the living characters list exist in the characters data.
+    생존 캐릭터 목록에 있는 모든 캐릭터가 캐릭터 데이터에 존재하는지 확인합니다.
 
     Args:
-        living_characters (list): List of character names to validate.
+        living_characters (list): 검증할 캐릭터 이름 목록.
 
     Returns:
-        bool: True if all characters exist, False otherwise.
+        bool: 모든 캐릭터가 존재하면 True, 그렇지 않으면 False.
     """
     for character_name in living_characters:
         if not get_character_info(character_name):
@@ -57,13 +57,13 @@ def validate_npc_names(living_characters):
 
 def conversation_with_user_input(conversation_user_schema):
     """
-    Prepares input data for a conversation with a user, including character details and previous chat content, formatted as JSON and a Pydantic model.
+    사용자와의 대화를 위한 입력 데이터를 준비하며, 캐릭터 세부 정보 및 이전 채팅 내용을 포함하여 JSON 및 Pydantic 모델로 형식화합니다.
 
     Args:
-        conversation_user_schema (object): Schema containing conversation information with a user.
+        conversation_user_schema (object): 사용자와의 대화 정보를 포함하는 스키마.
 
     Returns:
-        Tuple (input_data_json, input_data_pydantic): JSON and Pydantic formatted input data for the conversation.
+        대화용 JSON 및 Pydantic 형식의 입력 데이터 튜플.
     """
     character_info = get_character_info(conversation_user_schema.receiver.name)
 
@@ -88,13 +88,13 @@ def conversation_with_user_input(conversation_user_schema):
 
 def conversation_between_npc_input(conversation_npc_schema):
     """
-    Prepares input data for a conversation between two NPCs, formatted as JSON and a Pydantic model.
+    두 NPC 간의 대화를 위한 입력 데이터를 준비하며, JSON 및 Pydantic 모델로 형식화합니다.
 
     Args:
-        conversation_npc_schema (object): Schema containing conversation information between two NPCs.
+        conversation_npc_schema (object): 두 NPC 간의 대화 정보를 포함하는 스키마.
 
     Returns:
-        Tuple (input_data_json, input_data_pydantic): JSON and Pydantic formatted input data for the NPC conversation.
+        NPC 대화용 JSON 및 Pydantic 형식의 입력 데이터 튜플.
     """
     character_info_1 = get_character_info(conversation_npc_schema.npcName1.name)
     character_info_2 = get_character_info(conversation_npc_schema.npcName2.name)
@@ -121,13 +121,13 @@ def conversation_between_npc_input(conversation_npc_schema):
 
 def conversation_between_npc_each_input(conversation_npc_schema):
     """
-    Prepares input data for a conversation between two NPCs, including their individual responses and previous chat content, formatted as JSON and a Pydantic model.
+    두 NPC 간의 대화를 위한 입력 데이터를 준비하며, 개별 응답 및 이전 채팅 내용을 포함하여 JSON 및 Pydantic 모델로 형식화합니다.
 
     Args:
-        conversation_npc_schema (object): Schema containing detailed conversation information between two NPCs.
+        conversation_npc_schema (object): 두 NPC 간의 상세 대화 정보를 포함하는 스키마.
 
     Returns:
-        Tuple (input_data_json, input_data_pydantic): JSON and Pydantic formatted input data for detailed NPC conversation.
+        상세 NPC 대화용 JSON 및 Pydantic 형식의 입력 데이터 튜플.
     """
     character_info_1 = get_character_info(conversation_npc_schema.npcName1.name)
     character_info_2 = get_character_info(conversation_npc_schema.npcName2.name)

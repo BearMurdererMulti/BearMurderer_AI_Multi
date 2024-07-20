@@ -1,7 +1,7 @@
 from langchain_community.callbacks import get_openai_callback
 import time
 
-from lib import const
+from app.lib import const
 
 
 def execute_conversation(chain_function, format_check_function, schema, inputs):

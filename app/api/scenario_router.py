@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from typing import Optional, List 
 
-from domain.scenario import scenario_crud
-from domain.scenario.schema import scenario_router_schema
-from LLMs.langchain import generator
-from lib.validation_check import check_openai_api_key
+from ..services import scenario_service
+from ..schemas import scenario_router_schema
+from app.LLMs.langchain import generator
+from app.lib.validation_check import check_openai_api_key
 
 router = APIRouter(
     prefix="/api/scenario",
@@ -16,10 +16,10 @@ def validate_request_data(secret_key: str, murderer_name: Optional[str] = None, 
     if not api_key:
         raise HTTPException(status_code=404, detail="Invalid OpenAI API key.")
 
-    if murderer_name and not scenario_crud.get_character_info(murderer_name):
+    if murderer_name and not scenario_service.get_character_info(murderer_name):
         raise HTTPException(status_code=404, detail="Murderer not found in the character list.")
     
-    if living_characters and not scenario_crud.validate_living_characters(living_characters):
+    if living_characters and not scenario_service.validate_living_characters(living_characters):
         raise HTTPException(status_code=404, detail="Invalid livingCharacters in the list.")
     
     return api_key
@@ -55,11 +55,11 @@ async def generate_victim(generate_victim_schema: scenario_router_schema.Generat
                                     murderer_name = generate_victim_schema.murderer, 
                                     living_characters = generate_victim_schema.livingCharacters)
 
-    input_data_json, input_data_pydantic = scenario_crud.generate_victim_input(generate_victim_schema)
+    input_data_json, input_data_pydantic = scenario_service.generate_victim_input(generate_victim_schema)
 
     answer, tokens, execution_time = generator.generate_victim(api_key, input_data_pydantic)
 
-    result = scenario_crud.generate_victim_output(answer, input_data_pydantic, generate_victim_schema)
+    result = scenario_service.generate_victim_output(answer, input_data_pydantic, generate_victim_schema)
     final_response = {
         "answer": result, 
         "tokens": tokens
@@ -80,20 +80,20 @@ async def generate_victim_backup_plan(generate_victim_schema: scenario_router_sc
                                     living_characters = generate_victim_schema.livingCharacters)
 
     # plan A
-    input_data_json, input_data_pydantic = scenario_crud.generate_victim_input(generate_victim_schema)
+    input_data_json, input_data_pydantic = scenario_service.generate_victim_input(generate_victim_schema)
 
     answer_a, tokens_a, execution_time_a = generator.generate_victim(api_key, input_data_pydantic)
 
-    result_a = scenario_crud.generate_victim_output(answer_a, input_data_pydantic, generate_victim_schema)
+    result_a = scenario_service.generate_victim_output(answer_a, input_data_pydantic, generate_victim_schema)
 
     # plan B
     generate_victim_schema.livingCharacters = [character for character in generate_victim_schema.livingCharacters if character.name != input_data_pydantic.information.victim]
 
-    input_data_json, input_data_pydantic = scenario_crud.generate_victim_input(generate_victim_schema)
+    input_data_json, input_data_pydantic = scenario_service.generate_victim_input(generate_victim_schema)
 
     answer_b, tokens_b, execution_time_b = generator.generate_victim(api_key, input_data_pydantic)
 
-    result_b = scenario_crud.generate_victim_output(answer_b, input_data_pydantic, generate_victim_schema)
+    result_b = scenario_service.generate_victim_output(answer_b, input_data_pydantic, generate_victim_schema)
 
     # result
     tokens = {key: tokens_a.get(key, 0) + tokens_b.get(key, 0) for key in set(tokens_a) | set(tokens_b)}
@@ -119,10 +119,10 @@ async def generate_final_words(generator_final_words_schema: scenario_router_sch
     api_key = validate_request_data(generator_final_words_schema.secretKey, 
                                     murderer_name = generator_final_words_schema.murderer)
     
-    if not scenario_crud.get_character_info(generator_final_words_schema.murderer):
+    if not scenario_service.get_character_info(generator_final_words_schema.murderer):
         raise HTTPException(status_code=404, detail="Murderer not found in the character list.")
     
-    input_data_json, input_data_pydantic = scenario_crud.generate_final_words_input(generator_final_words_schema)
+    input_data_json, input_data_pydantic = scenario_service.generate_final_words_input(generator_final_words_schema)
 
     answer, tokens, execution_time = generator.generate_final_words(api_key, input_data_pydantic)
 
