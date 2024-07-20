@@ -1,13 +1,27 @@
-FROM python:3.10
+FROM python:3.10-slim-buster AS builder
 
-# 작업 디렉토리 설정
-WORKDIR /workspace
+WORKDIR /app
 
-# 현재 디렉토리의 파일들을 컨테이너의 /app에 복사
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --no-cache-dir --upgrade pip \
+    && pip install pipenv
+
+COPY Pipfile Pipfile.lock ./
+
+RUN pipenv install --system --deploy --ignore-pipfile
+
+
+FROM python:3.10-slim-buster
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
 COPY . .
 
-# 필요한 Python 패키지 설치
-RUN pip install -r requirements.txt
-
-# FastAPI 애플리케이션 실행
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
