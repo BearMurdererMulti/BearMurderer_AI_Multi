@@ -1,5 +1,6 @@
 from typing import List, Optional
 from pydantic import BaseModel
+from pydantic.config import ConfigDict
 
 
 class Tokens(BaseModel):
@@ -14,8 +15,7 @@ class GenerateInput(BaseModel):
 class GenerateOutput(BaseModel):
     tokens: Tokens
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 # router input

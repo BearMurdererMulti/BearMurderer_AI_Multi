@@ -2,7 +2,7 @@ from . import chains
 from .execute_conversation import execute_conversation
 from .prompt import prompts_schema
 from .prompt import prompts_scenario, prompts_user
-from ...lib.validation_check import response_format
+from ..lib.validation_check import response_format
 
 
 # scenario
