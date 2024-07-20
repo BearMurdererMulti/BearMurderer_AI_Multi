@@ -51,7 +51,7 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
             # Run the new container
-            podman run -d --name ${{ env.CONTAINER_NAME }} -p 80:8000 -v /home/ubuntu/security/bear-murder-ai/.env:/app/.env ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            docker run -d --name ${{ env.CONTAINER_NAME }} -p 80:8000 -v /home/ubuntu/security/bear-murder-ai/.env:/app/.env ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
             # Clean up unused Docker images
-            podman image prune -af
+            docker image prune -af
