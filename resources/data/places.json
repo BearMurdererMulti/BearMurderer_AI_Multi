@@ -1,0 +1,18 @@
+{
+    "places": [
+        {"id": "Park", "place": {"en": "Park", "ko": "공원"}},
+        {"id": "Alley", "place": {"en": "Alley", "ko": "골목"}},
+        {"id": "Forest", "place": {"en": "Forest", "ko": "숲"}},
+        {"id": "House", "place": {"en": "House", "ko": "집"}},
+        {"id": "Store", "place": {"en": "Store", "ko": "상점"}},
+        {"id": "Office", "place": {"en": "Office", "ko": "사무실"}},
+        {"id": "Cafe", "place": {"en": "Cafe", "ko": "카페"}},
+        {"id": "Salon", "place": {"en": "Salon", "ko": "미용실"}},
+        {"id": "Hotel", "place": {"en": "Hotel", "ko": "호텔"}},
+        {"id": "Train", "place": {"en": "Train", "ko": "기차역"}},
+        {"id": "Beach", "place": {"en": "Beach", "ko": "해변"}},
+        {"id": "Bank", "place": {"en": "Bank", "ko": "은행"}},
+        {"id": "Library", "place": {"en": "Library", "ko": "도서관"}},
+        {"id": "LeftTree", "place": {"en": "LeftTree", "ko": "서쪽 마을 나무 밑"}}
+    ]
+}

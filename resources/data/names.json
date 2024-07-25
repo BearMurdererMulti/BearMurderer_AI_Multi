@@ -1,0 +1,22 @@
+{
+    "names": [
+        {"id": "Leo", "name": {"en": "Leo", "ko": "레오"}},
+        {"id": "Sophia", "name": {"en": "Sophia", "ko": "소피아"}},
+        {"id": "Marco", "name": {"en": "Marco", "ko": "마르코"}},
+        {"id": "Isabel", "name": {"en": "Isabel", "ko": "이사벨"}},
+        {"id": "Alex", "name": {"en": "Alex", "ko": "알렉스"}},
+        {"id": "Nicholas", "name": {"en": "Nicholas", "ko": "니콜라스"}},
+        {"id": "Oliver", "name": {"en": "Oliver", "ko": "올리버"}},
+        {"id": "Vivian", "name": {"en": "Vivian", "ko": "비비안"}},
+        {"id": "Theo", "name": {"en": "Theo", "ko": "테오"}},
+        {"id": "Jasmine", "name": {"en": "Jasmine", "ko": "자스민"}},
+        {"id": "Milo", "name": {"en": "Milo", "ko": "마일로"}},
+        {"id": "Lena", "name": {"en": "Lena", "ko": "레나"}},
+        {"id": "Ash", "name": {"en": "Ash", "ko": "애쉬"}},
+        {"id": "KimKoongYa", "name": {"en": "KimKoongYa", "ko": "김쿵야"}},
+        {"id": "ParkDongSik", "name": {"en": "ParkDongSik", "ko": "박동식"}},
+        {"id": "ZzanZzanYoung", "name": {"en": "ZzanZzanYoung", "ko": "짠짠영"}},
+        {"id": "TaeGeunTV", "name": {"en": "TaeGeunTV", "ko": "태근티비"}},
+        {"id": "ParkYoonJu", "name": {"en": "ParkYoonJu", "ko": "박윤주"}}
+    ]
+}

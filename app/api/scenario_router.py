@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from typing import Optional, List 
 
 from ..services import scenario_service
@@ -131,3 +131,79 @@ async def generate_final_words(generator_final_words_schema: scenario_router_sch
         "tokens": tokens
     }
     return final_response
+
+# 새로운 게임을 시작하는 라우터
+@router.post("/start", 
+            description="새로운 게임을 시작하며 게임을 생성하는 API 입니다.", 
+            tags=["NEW_GAME"])
+def start_game(request: Request, gameNo: str, language: str = "ko", npc_count: int = 6):
+    game_service = request.app.state.game_service
+    if language not in ["en", "ko"]:
+        raise HTTPException(status_code=400, detail="Invalid language. Choose 'en' or 'ko'.")
+    try:
+        game_service.initialize_new_game(gameNo, language, npc_count)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    return {"message": "New game started"}
+
+# 시나리오를 생성하는 라우터
+@router.post("/generate_scenario", 
+            description="해당 게임의 상태에 따라 시나리오를 생성하는 API 입니다.", 
+            tags=["NEW_GAME"])
+def generate_scenario(request: Request, gameNo: str):
+    game_service = request.app.state.game_service
+    try:
+        scenario = game_service.generate_game_scenario(gameNo)
+        return {"scenario": scenario}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# 촌장의 편지를 생성하는 라우터
+@router.post("/generate_chief_letter", 
+            description="해당 게임의 상태에 따라 촌장의 편지를 생성하는 API 입니다.", 
+            tags=["NEW_GAME"])
+def generate_chief_letter(request: Request, gameNo: str):
+    game_service = request.app.state.game_service
+    try:
+        chief_letter = game_service.generate_chief_letter(gameNo)
+        return {"chief_letter": chief_letter}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# 게임 상태를 확인하는 라우터
+@router.get("/status", 
+            description="해당 게임의 상태를 확인하는 API 입니다.", 
+            tags=["NEW_GAME"])
+def get_game_status(request: Request, gameNo: str):
+    game_service = request.app.state.game_service
+    try:
+        status = game_service.get_game_status(gameNo)
+        return status
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+# 게임 진행을 다음 날로 넘기는 라우터
+@router.post("/next_day", 
+            description="해당 게임의 상태를 다음 날로 넘기는 API 입니다.", 
+            tags=["IN_GAME"])
+def next_day(request: Request, gameNo: str):
+    game_service = request.app.state.game_service
+    try:
+        result = game_service.proceed_to_next_day(gameNo)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# 게임 진행 상황을 저장하는 라우터
+@router.post("/save_progress", 
+            description="해당 게임의 상태를 저장하는 API 입니다.", 
+            tags=["NEW_GAME"])
+def save_progress(request: Request, gameNo: str, game_state: dict):
+    game_service = request.app.state.game_service
+    try:
+        result = game_service.save_game_progress(gameNo, game_state)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

@@ -1,0 +1,187 @@
+{
+    "npcs": [
+        {
+            "name": "Leo",
+            "age": 25,
+            "gender": "Male",
+            "wealth": "Medium",
+            "personality": "Brave",
+            "feature": "Musician",
+            "preferredLocations": ["Park", "Alley", "Forest"],
+            "criminalScenario": "Revenge"
+        },
+        {
+            "name": "Sophia",
+            "age": 32,
+            "gender": "Female",
+            "wealth": "Moderate",
+            "personality": "Wise",
+            "feature": "Quiet",
+            "preferredLocations": ["House", "Store", "Office"],
+            "criminalScenario": "Abandonment"
+        },
+        {
+            "name": "Marco",
+            "age": 28,
+            "gender": "Male",
+            "wealth": "Low",
+            "personality": "Mysterious",
+            "feature": "Nocturnal",
+            "preferredLocations": ["Forest", "Park", "Alley"],
+            "criminalScenario": "Bullying"
+        },
+        {
+            "name": "Isabel",
+            "age": 30,
+            "gender": "Female",
+            "wealth": "Moderate",
+            "personality": "Cheerful",
+            "feature": "Catlike",
+            "preferredWeapons": ["Knife", "Poison", "Dagger"],
+            "preferredLocations": ["Cafe", "Salon", "Hotel"],
+            "criminalScenario": "DarkOrganization"
+        },
+        {
+            "name": "Alex",
+            "age": 26,
+            "gender": "Male",
+            "wealth": "High",
+            "personality": "Adventurous",
+            "feature": "Wanderer",
+            "preferredWeapons": ["Gun", "Rope", "Bat"],
+            "preferredLocations": ["Train", "Hotel", "Beach"],
+            "criminalScenario": "HatesHumans"
+        },
+        {
+            "name": "Nicholas",
+            "age": 35,
+            "gender": "Male",
+            "wealth": "Moderate",
+            "personality": "Reserved",
+            "feature": "OldStyle",
+            "preferredLocations": ["Office", "House", "Bank"],
+            "criminalScenario": "DemonSacrifice"
+        },
+        {
+            "name": "Oliver",
+            "age": 27,
+            "gender": "Male",
+            "wealth": "Low",
+            "personality": "Cunning",
+            "feature": "Nocturnal",
+            "preferredLocations": ["Alley", "Forest", "Park"],
+            "criminalScenario": "MonsterFeeding"
+        },
+        {
+            "name": "Vivian",
+            "age": 31,
+            "gender": "Female",
+            "wealth": "Moderate",
+            "personality": "Curious",
+            "feature": "Storyteller",
+            "preferredLocations": ["Cafe", "Beach", "Park"],
+            "criminalScenario": "PleasureKiller"
+        },
+        {
+            "name": "Theo",
+            "age": 25,
+            "gender": "Male",
+            "wealth": "Moderate",
+            "personality": "Artistic",
+            "feature": "Musician",
+            "preferredLocations": ["Cafe", "House", "Park"],
+            "criminalScenario": "PerformanceArt"
+        },
+        {
+            "name": "Jasmine",
+            "age": 30,
+            "gender": "Female",
+            "wealth": "High",
+            "personality": "Skeptical",
+            "feature": "Scholar",
+            "preferredLocations": ["Library", "Office", "House"],
+            "criminalScenario": "AcademicCuriosity"
+        },
+        {
+            "name": "Milo",
+            "age": 26,
+            "gender": "Male",
+            "wealth": "Low",
+            "personality": "Optimistic",
+            "feature": "Explorer",
+            "preferredLocations": ["Forest", "Beach", "Park"],
+            "criminalScenario": "PreciousRing"
+        },
+        {
+            "name": "Lena",
+            "age": 38,
+            "gender": "Female",
+            "wealth": "Moderate",
+            "personality": "Observant",
+            "feature": "Naturalist",
+            "preferredWeapons": ["Poison", "Rope", "Knife"],
+            "preferredLocations": ["Forest", "Park", "LeftTree"],
+            "criminalScenario": "EnvironmentalExtremist"
+        },
+        {
+            "name": "Ash",
+            "age": 24,
+            "gender": "Female",
+            "wealth": "High",
+            "personality": "Humorous",
+            "feature": "Humorous speech",
+            "preferredLocations": ["Cafe", "Salon", "Train"],
+            "criminalScenario": "HiddenMadness"
+        },
+        {
+            "name": "KimKoongYa",
+            "age": 24,
+            "gender": "Female",
+            "wealth": "High",
+            "personality": "Playful",
+            "feature": "Magician",
+            "preferredLocations": ["Cafe", "Park", "Hotel"],
+            "criminalScenario": "GlassesKill"
+        },
+        {
+            "name": "ParkDongSik",
+            "age": 27,
+            "gender": "Female",
+            "wealth": "High",
+            "personality": "Diligent",
+            "feature": "Attention Seeker",
+            "preferredLocations": ["Cafe", "Salon", "Hotel"],
+            "criminalScenario": "AttentionSeeker"
+        },
+        {
+            "name": "ZzanZzanYoung",
+            "age": 33,
+            "gender": "Male",
+            "wealth": "High",
+            "personality": "Creative",
+            "feature": "Collector",
+            "preferredLocations": ["Cafe", "Train", "Park"],
+            "criminalScenario": "Temptation"
+        },
+        {
+            "name": "TaeGeunTV",
+            "age": 27,
+            "gender": "Male",
+            "wealth": "High",
+            "personality": "Creative",
+            "feature": "Quirky",
+            "preferredLocations": ["Cafe", "Park", "Train"],
+            "criminalScenario": "Unknown"
+        },
+        {
+            "name": "ParkYoonJu",
+            "age": 25,
+            "gender": "Female",
+            "wealth": "High",
+            "personality": "Meticulous",
+            "feature": "Painter",
+            "preferredLocations": ["Park", "Cafe", "Train"],
+            "criminalScenario": "Unknown"
+        }
+    ]
+}

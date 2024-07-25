@@ -1,0 +1,8 @@
+{
+    "wealth": [
+        {"id": "Low", "wealth": {"en": "Low", "ko": "낮음"}},
+        {"id": "Medium", "wealth": {"en": "Medium", "ko": "중간"}},
+        {"id": "High", "wealth": {"en": "High", "ko": "높음"}},
+        {"id": "Moderate", "wealth": {"en": "Moderate", "ko": "적당함"}}
+    ]
+}
