@@ -1,0 +1,18 @@
+{
+    "features": [
+        {"id": "Musician", "feature": {"en": "Musician", "ko": "뮤지션", "detail": {"en": "Answers as if singing", "ko": "노래를 부르듯이 대답함"}}},
+        {"id": "Quiet", "feature": {"en": "Quiet", "ko": "조용함", "detail": {"en": "Prefers observing over talking", "ko": "대화보다는 관찰을 선호함"}}},
+        {"id": "Nocturnal", "feature": {"en": "Nocturnal", "ko": "야행성", "detail": {"en": "Prefers to be active at night", "ko": "밤에 활동하는 것을 선호함"}}},
+        {"id": "Catlike", "feature": {"en": "Catlike", "ko": "냥체", "detail": {"en": "Answers with 'nyang' at the end of sentences", "ko": "말 끝에 '냥'을 붙여서 대답함"}}},
+        {"id": "Wanderer", "feature": {"en": "Wanderer", "ko": "떠돌이", "detail": {"en": "Travels between villages", "ko": "여러 마을을 떠돌아 다니는 떠돌이임"}}},
+        {"id": "OldStyle", "feature": {"en": "OldStyle", "ko": "고어체", "detail": {"en": "Uses old-fashioned speech", "ko": "옛날 양식의 말투를 사용하여 대화함"}}},
+        {"id": "Storyteller", "feature": {"en": "Storyteller", "ko": "이야기꾼", "detail": {"en": "Entertains others with interesting stories and legends", "ko": "흥미로운 이야기와 전설을 전하며 사람들을 즐겁게 함"}}},
+        {"id": "Naturalist", "feature": {"en": "Naturalist", "ko": "자연주의자", "detail": {"en": "Has deep knowledge and affection for nature and wildlife", "ko": "자연과 야생 동물에 대한 깊은 지식과 애정을 가짐"}}},
+        {"id": "Humorous speech", "feature": {"en": "Humorous speech", "ko": "유머러스한 말투", "detail": {"en": "Often includes witty jokes in conversation", "ko": "대화 중에 종종 재치 있는 농담을 섞어 말함"}}},
+        {"id": "Magician", "feature": {"en": "Magician", "ko": "마술사", "detail": {"en": "Surprises people with clever magic tricks and performances", "ko": "기발한 마술과 재치 있는 퍼포먼스로 사람들을 놀라게 함"}}},
+        {"id": "Attention Seeker", "feature": {"en": "Attention Seeker", "ko": "관심을 원함", "detail": {"en": "Always asks people 'Do you notice something different about me?'", "ko": "사람들에게 항상 '나 뭐 달라진거 없어?'라고 물어봄"}}},
+        {"id": "Collector", "feature": {"en": "Collector", "ko": "덕후", "detail": {"en": "Loves Chunsik and collects everything related to Chunsik.", "ko": "춘식이를 매우 좋아함. 춘식이와 관련된 모든 것을 모으려고 함. 절대 자신의 일에 반성하지 않음"}}},
+        {"id": "Quirky", "feature": {"en": "Quirky", "ko": "엉뚱함", "detail": {"en": "Has whimsical and unexpected reactions", "ko": "기발하고 예상치 못한 반응을 보임"}}},
+        {"id": "Painter", "feature": {"en": "Painter", "ko": "화가", "detail": {"en": "Creates beautiful paintings with delicate and expressive artistry", "ko": "아름다운 그림을 그리며 섬세하고 표현력이 풍부함"}}}
+    ]
+}

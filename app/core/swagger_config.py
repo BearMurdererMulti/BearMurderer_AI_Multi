@@ -26,6 +26,14 @@ class SwaggerConfig:
                 "name": "user",
                 "description": "사용자와 상호작용 할 수 있도록 답변을 생성합니다."
             },
+            {
+                "name": "NEW_GAME",
+                "description": "새로운 게임 시작 시 사용되는 API입니다."
+            },
+            {
+                "name": "IN_GAME",
+                "description": "게임 중 사용되는 API입니다."
+            },
         ]
 
     def get_config(self):

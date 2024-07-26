@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request, Query
 from typing import Optional, List
 
 from ..langchain import generator
@@ -85,3 +85,31 @@ async def conversation_between_npcs_each(conversation_npcs_each_schema: user_rou
         "tokens": tokens
     }
     return final_response
+
+# NPC에게 할 질문을 생성하는 라우터
+@router.get("/generate_questions", 
+            description="NPC에게 할 질문을 생성하는 API 입니다.", 
+            tags=["IN_GAME"])
+def generate_questions(request: Request, gameNo: str, npc_name: str, keyword: str = Query(None), keyword_type: str = "weapon"):
+    game_service = request.app.state.game_service
+    try:
+        questions = game_service.generate_npc_questions(gameNo, npc_name, keyword, keyword_type)
+        return {"questions": questions}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# NPC에게 한 질문에 대한 답을 생성하는 라우터
+@router.post("/generate_answer", 
+            description="NPC에게 한 질문에 대한 답을 생성하는 API 입니다.", 
+            tags=["IN_GAME"])
+def talk_to_npc(request: Request, gameNo: str, npc_name: str, question_index: int, keyword: str = Query(None), keyword_type: str = "weapon"):
+    game_service = request.app.state.game_service
+    try:
+        response = game_service.talk_to_npc(gameNo, npc_name, question_index, keyword, keyword_type)
+        return {"response": response}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

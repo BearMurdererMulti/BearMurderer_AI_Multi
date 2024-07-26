@@ -1,0 +1,21 @@
+{
+    "personalities": [
+        {"id": "Brave", "personality": {"en": "Brave", "ko": "용감함", "detail": {"en": "Acts courageously", "ko": "용기 있게 행동함"}}},
+        {"id": "Wise", "personality": {"en": "Wise", "ko": "지혜로움", "detail": {"en": "Has deep insight and wise judgment", "ko": "깊은 통찰력과 현명한 판단을 가짐"}}},
+        {"id": "Mysterious", "personality": {"en": "Mysterious", "ko": "신비로움", "detail": {"en": "Has an enigmatic charm and secretive aura", "ko": "알 수 없는 매력과 비밀스러운 분위기를 가짐"}}},
+        {"id": "Cheerful", "personality": {"en": "Cheerful", "ko": "명랑함", "detail": {"en": "Brightens the surroundings with positive energy", "ko": "밝고 긍정적인 에너지로 주변을 환하게 함"}}},
+        {"id": "Cunning", "personality": {"en": "Cunning", "ko": "교활함", "detail": {"en": "Achieves goals through cleverness and trickery", "ko": "기민하고 때로는 속임수를 쓰며 목적을 달성함"}}},
+        {"id": "Adventurous", "personality": {"en": "Adventurous", "ko": "모험적임", "detail": {"en": "Strong desire to experience new things", "ko": "새로운 것을 경험하려는 강한 욕구를 가짐"}}},
+        {"id": "Reserved", "personality": {"en": "Reserved", "ko": "조용함", "detail": {"en": "Prefers observing over talking, speaks minimally", "ko": "대화보다는 관찰을 선호하며 적은 말로 의사를 표현함"}}},
+        {"id": "Curious", "personality": {"en": "Curious", "ko": "호기심 많음", "detail": {"en": "Constantly seeks new knowledge and experiences", "ko": "새로운 지식과 경험에 대한 끊임없는 호기심을 가짐"}}},
+        {"id": "Artistic", "personality": {"en": "Artistic", "ko": "예술가형", "detail": {"en": "Creative and emotional personality", "ko": "창의적이고 감성적인 성격을 지니고 있음"}}},
+        {"id": "Skeptical", "personality": {"en": "Skeptical", "ko": "회의적", "detail": {"en": "Questions surrounding events and seeks the truth", "ko": "주변 사건에 대해 의심을 품으며 진실을 탐구함"}}},
+        {"id": "Optimistic", "personality": {"en": "Optimistic", "ko": "낙천적", "detail": {"en": "Always positive and hopeful", "ko": "항상 긍정적이며 희망을 잃지 않음"}}},
+        {"id": "Observant", "personality": {"en": "Observant", "ko": "관찰자", "detail": {"en": "Carefully observes surroundings and people", "ko": "주변 환경과 사람들을 주의 깊게 관찰함"}}},
+        {"id": "Humorous", "personality": {"en": "Humorous", "ko": "유머러스함", "detail": {"en": "Witty and humorous personality", "ko": "재치 있고 유머러스한 성격을 지님"}}},
+        {"id": "Playful", "personality": {"en": "Playful", "ko": "장난꾸러기", "detail": {"en": "Fun and cheerful personality", "ko": "재미있고 유쾌한 성격으로 주변 사람들을 즐겁게 함"}}},
+        {"id": "Diligent", "personality": {"en": "Diligent", "ko": "근면함", "detail": {"en": "Sincere and meticulous in tasks", "ko": "맡은 일에 대해 성실하고 꼼꼼하게 임함"}}},
+        {"id": "Creative", "personality": {"en": "Creative", "ko": "기발함", "detail": {"en": "Attracts attention with original and creative ideas", "ko": "독창적이고 창의적인 생각으로 눈길을 끔"}}},
+        {"id": "Meticulous", "personality": {"en": "Meticulous", "ko": "세심함", "detail": {"en": "Pays attention to small details and examines everything thoroughly", "ko": "작은 디테일에도 주의를 기울이며 모든 것을 꼼꼼하게 살피는 성격"}}}
+    ]
+}
