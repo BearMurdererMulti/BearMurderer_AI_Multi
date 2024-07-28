@@ -27,3 +27,24 @@ class GameState(BaseModel):
     game_over: bool
     current_questions: List[str] = []
     user_language: str = "en"
+
+class GameStartRequest(BaseModel):
+    gameNo: int
+    language: str = "ko"
+    npc_count: int = 6
+
+class GameRequest(BaseModel):
+    gameNo: int
+
+class QuestionRequest(BaseModel):
+    gameNo: int
+    npc_name: str
+    keyword: str
+    keyword_type: str = "weapon"
+
+class AnswerRequest(BaseModel):
+    gameNo: int
+    npc_name: str
+    question_index: int
+    keyword: str
+    keyword_type: str = "weapon"

@@ -1,5 +1,7 @@
 from fastapi import APIRouter, HTTPException, Request
-from typing import Optional, List 
+from typing import Optional, List
+
+from app.schemas import game_schema 
 
 from ..services import scenario_service
 from ..schemas import scenario_router_schema
@@ -136,12 +138,12 @@ async def generate_final_words(generator_final_words_schema: scenario_router_sch
 @router.post("/start", 
             description="새로운 게임을 시작하며 게임을 생성하는 API 입니다.", 
             tags=["NEW_GAME"])
-def start_game(request: Request, gameNo: str, language: str = "ko", npc_count: int = 6):
+async def start_game(request: Request, game_data: game_schema.GameStartRequest):
     game_service = request.app.state.game_service
-    if language not in ["en", "ko"]:
+    if game_data.language not in ["en", "ko"]:
         raise HTTPException(status_code=400, detail="Invalid language. Choose 'en' or 'ko'.")
     try:
-        game_service.initialize_new_game(gameNo, language, npc_count)
+        game_service.initialize_new_game(game_data.gameNo, game_data.language, game_data.npc_count)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     return {"message": "New game started"}
@@ -150,10 +152,10 @@ def start_game(request: Request, gameNo: str, language: str = "ko", npc_count: i
 @router.post("/generate_scenario", 
             description="해당 게임의 상태에 따라 시나리오를 생성하는 API 입니다.", 
             tags=["NEW_GAME"])
-def generate_scenario(request: Request, gameNo: str):
+def generate_scenario(request: Request, game_data: game_schema.GameRequest):
     game_service = request.app.state.game_service
     try:
-        scenario = game_service.generate_game_scenario(gameNo)
+        scenario = game_service.generate_game_scenario(game_data.gameNo)
         return {"scenario": scenario}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -162,22 +164,22 @@ def generate_scenario(request: Request, gameNo: str):
 @router.post("/generate_chief_letter", 
             description="해당 게임의 상태에 따라 촌장의 편지를 생성하는 API 입니다.", 
             tags=["NEW_GAME"])
-def generate_chief_letter(request: Request, gameNo: str):
+def generate_chief_letter(request: Request, game_data: game_schema.GameRequest):
     game_service = request.app.state.game_service
     try:
-        chief_letter = game_service.generate_chief_letter(gameNo)
+        chief_letter = game_service.generate_chief_letter(game_data.gameNo)
         return {"chief_letter": chief_letter}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 # 게임 상태를 확인하는 라우터
-@router.get("/status", 
+@router.post("/status", 
             description="해당 게임의 상태를 확인하는 API 입니다.", 
             tags=["NEW_GAME"])
-def get_game_status(request: Request, gameNo: str):
+def get_game_status(request: Request, game_data: game_schema.GameRequest):
     game_service = request.app.state.game_service
     try:
-        status = game_service.get_game_status(gameNo)
+        status = game_service.get_game_status(game_data.gameNo)
         return status
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -186,10 +188,10 @@ def get_game_status(request: Request, gameNo: str):
 @router.post("/next_day", 
             description="해당 게임의 상태를 다음 날로 넘기는 API 입니다.", 
             tags=["IN_GAME"])
-def next_day(request: Request, gameNo: str):
+def next_day(request: Request, game_data: game_schema.GameRequest):
     game_service = request.app.state.game_service
     try:
-        result = game_service.proceed_to_next_day(gameNo)
+        result = game_service.proceed_to_next_day(game_data.gameNo)
         return result
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -200,10 +202,11 @@ def next_day(request: Request, gameNo: str):
 @router.post("/save_progress", 
             description="해당 게임의 상태를 저장하는 API 입니다.", 
             tags=["NEW_GAME"])
-def save_progress(request: Request, gameNo: str, game_state: dict):
+def save_progress(request: Request, game_data: game_schema.GameRequest):
     game_service = request.app.state.game_service
     try:
-        result = game_service.save_game_progress(gameNo, game_state)
+        game_state = game_service.get_game_status(game_data.gameNo)
+        result = game_service.save_game_progress(game_data.gameNo, game_state)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
