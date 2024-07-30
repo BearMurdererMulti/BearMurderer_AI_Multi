@@ -168,7 +168,7 @@ def generate_chief_letter(request: Request, game_data: game_schema.GameRequest):
     game_service = request.app.state.game_service
     try:
         chief_letter = game_service.generate_chief_letter(game_data.gameNo)
-        return {"chief_letter": chief_letter}
+        return {"answer": chief_letter}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
