@@ -7,11 +7,11 @@ from app.services.scenario_generation import ScenarioGeneration
 # 여러 게임 상태 관리
 class GameService:
     def __init__(self):
-        self.game_managements = {}
-        self.question_generations = {}
-        self.hint_investigations = {}
-        self.scenario_generations = {}
-        self.game_states = {}
+        self.game_managements: dict[int, GameManagement] = {}
+        self.question_generations: dict[int, QuestionGeneration] = {}
+        self.hint_investigations: dict[int, HintInvestigation] = {}
+        self.scenario_generations: dict[int, ScenarioGeneration] = {}
+        self.game_states: dict[int, dict] = {}
 
     # 새로운 게임을 시작하고 초기화하는 메서드
     def initialize_new_game(self, gameNo, language, npc_count):
