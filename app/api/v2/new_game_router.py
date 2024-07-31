@@ -17,7 +17,7 @@ async def start_game(request: Request, game_data: game_schema.GameStartRequest):
     if game_data.language not in ["en", "ko"]:
         raise HTTPException(status_code=400, detail="Invalid language. Choose 'en' or 'ko'.")
     try:
-        game_service.initialize_new_game(game_data.gameNo, game_data.language, game_data.npc_count)
+        game_service.initialize_new_game(game_data.gameNo, game_data.language)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     return {"message": "New game started"}

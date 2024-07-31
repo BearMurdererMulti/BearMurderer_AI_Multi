@@ -14,9 +14,9 @@ class GameService:
         self.game_states: dict[int, dict] = {}
 
     # 새로운 게임을 시작하고 초기화하는 메서드
-    def initialize_new_game(self, gameNo, language, npc_count):
+    def initialize_new_game(self, gameNo, language):
         game_management = GameManagement()
-        game_management.initialize_game(language, npc_count)
+        game_management.initialize_game(language, 9)
         game_state = game_management.game_state
         game_state['current_day'] = 1
         game_state['alive'] = {npc["name"]: True for npc in game_state["npcs"]}

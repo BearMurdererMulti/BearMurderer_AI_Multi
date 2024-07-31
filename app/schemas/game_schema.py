@@ -31,7 +31,7 @@ class GameState(BaseModel):
 class GameStartRequest(BaseModel):
     gameNo: int
     language: str = "ko"
-    npc_count: int = 6
+    # npc_count: int = 6
 
 class GameRequest(BaseModel):
     gameNo: int
