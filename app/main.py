@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 
-from app.api import user_router
-from app.api import scenario_router
-from app.api import etc_router
+from app.api.v1 import user_router, scenario_router, etc_router
+from app.api.v2 import in_game_router, new_game_router
 from app.core.swagger_config import SwaggerConfig
 from app.services.game_service import GameService
 
@@ -21,6 +20,8 @@ app = FastAPI(
 app.include_router(user_router.router)
 app.include_router(scenario_router.router)
 app.include_router(etc_router.router)
+app.include_router(in_game_router.router)
+app.include_router(new_game_router.router)
 
 # 전역 GameService 인스턴스 생성
 game_service = GameService()

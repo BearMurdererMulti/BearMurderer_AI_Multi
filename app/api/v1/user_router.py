@@ -1,16 +1,15 @@
-from fastapi import APIRouter, HTTPException, Request, Query
+from fastapi import APIRouter, HTTPException
 from typing import Optional, List
 
-from app.schemas import game_schema 
-
-from ..langchain import generator
-from ..lib.validation_check import check_openai_api_key
-from ..schemas import user_router_schema
-from ..services import user_service
+from app.langchain import generator
+from app.lib.validation_check import check_openai_api_key
+from app.schemas import user_router_schema
+from app.services import user_service
 
 
 router = APIRouter(
-    prefix="/api/user",
+    prefix="/api/v1/user",
+    tags=["USER"]
 )
 
 
@@ -28,10 +27,9 @@ def validate_request_data(secret_key: str, receiver_name: Optional[str] = None, 
     return api_key
 
 
-@router.post("/conversation_with_user", 
+@router.post("/conversation/user", 
              description="npc와 user간의 대화를 위한 API입니다.", 
-             response_model=user_router_schema.ConversationUserOutput, 
-             tags=["user"])
+             response_model=user_router_schema.ConversationUserOutput)
 async def conversation_with_user(conversation_user_schema: user_router_schema.ConversationUserInput):
     api_key = validate_request_data(conversation_user_schema.secretKey, 
                                     receiver_name = conversation_user_schema.receiver.name)
@@ -46,10 +44,9 @@ async def conversation_with_user(conversation_user_schema: user_router_schema.Co
     return final_response
 
 
-@router.post("/conversation_between_npcs", 
+@router.post("/conversation/npcs", 
              description="npc와 npc간의 대화를 생성해 주는 API입니다.", 
-             response_model=user_router_schema.ConversationNPCOutput, 
-             tags=["user"])
+             response_model=user_router_schema.ConversationNPCOutput)
 async def conversation_between_npc(conversation_npc_schema: user_router_schema.ConversationNPCInput):
     print(conversation_npc_schema.model_dump_json(indent=2))
     # chatDay, previousStory 이용 안함
@@ -68,10 +65,9 @@ async def conversation_between_npc(conversation_npc_schema: user_router_schema.C
     return final_response
 
 
-@router.post("/conversation_between_npcs_each", 
+@router.post("/conversation/npcs/each", 
              description="npc와 npc간의 대화를 하나씩 생성해 주는 API입니다.", 
-             response_model=user_router_schema.ConversationNPCEachOutput, 
-             tags=["user"])
+             response_model=user_router_schema.ConversationNPCEachOutput)
 async def conversation_between_npcs_each(conversation_npcs_each_schema: user_router_schema.ConversationNPCEachInput):
     # chatDay, previousStory 이용 안함
 
@@ -87,42 +83,3 @@ async def conversation_between_npcs_each(conversation_npcs_each_schema: user_rou
         "tokens": tokens
     }
     return final_response
-
-# NPC에게 할 질문을 생성하는 라우터
-@router.post("/generate_questions", 
-            description="NPC에게 할 질문을 생성하는 API 입니다.", 
-            tags=["IN_GAME"])
-async def generate_questions(request: Request, question_data: game_schema.QuestionRequest):
-    game_service = request.app.state.game_service
-    try:
-        questions = game_service.generate_npc_questions(
-            question_data.gameNo, 
-            question_data.npc_name, 
-            question_data.keyword, 
-            question_data.keyword_type
-        )
-        return {"questions": questions}
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-# NPC에게 한 질문에 대한 답을 생성하는 라우터
-@router.post("/generate_answer", 
-            description="NPC에게 한 질문에 대한 답을 생성하는 API 입니다.", 
-            tags=["IN_GAME"])
-async def talk_to_npc(request: Request, answer_data: game_schema.AnswerRequest):
-    game_service = request.app.state.game_service
-    try:
-        response = game_service.talk_to_npc(
-            answer_data.gameNo, 
-            answer_data.npc_name, 
-            answer_data.question_index, 
-            answer_data.keyword, 
-            answer_data.keyword_type
-        )
-        return {"response": response}
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))

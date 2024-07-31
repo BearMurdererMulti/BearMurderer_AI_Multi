@@ -1,4 +1,6 @@
 import random
+import json
+import re
 from app.utils.gpt_helper import get_gpt_response
 from app.utils.game_utils import (
     create_context,
@@ -38,7 +40,7 @@ class ScenarioGeneration:
             f"Write the story in {lang}."
         )
 
-        scenario_description = get_gpt_response(prompt, max_tokens=500)
+        scenario_description = get_gpt_response(prompt, max_tokens=1000)
 
         return {
             "description": scenario_description
@@ -70,13 +72,14 @@ class ScenarioGeneration:
             f"Write the story in {lang}."
         )
 
-        scenario_description = get_gpt_response(prompt, max_tokens=500)
+        scenario_description = get_gpt_response(prompt, max_tokens=1000)
         self.game_state.setdefault('scenarios', []).append(scenario_description)
 
         return {
             "description": scenario_description
         }
 
+    # 시나리오에 날짜 삽입
     def get_day_description(self, day, lang):
         day_descriptions_ko = ["첫째날", "둘째날", "셋째날", "넷째날", "다섯째날"]
         day_descriptions_en = ["first day", "second day", "third day", "fourth day", "fifth day"]
@@ -91,14 +94,41 @@ class ScenarioGeneration:
         lang = self.game_state["language"]
         context = create_context(self.game_state, self.personalities, self.features, self.weapons, self.places, self.names)
 
-        prompt = (
-            f"Write a brief letter in {lang} from the village chief to a detective, requesting help with solving a recent murder in Bear Town. "
-            f"The letter should be concise and not reveal any details about the suspects, the murder weapon, or the location of the murder. "
-            f"Sign the letter as '촌장 올림'."
-        )
+        if lang == "ko":
+            closing_example = "베어 타운 촌장 올림"
+        else:
+            closing_example = "Sincerely, Village Chief of Bear Town"
 
-        chief_letter = get_gpt_response(prompt, max_tokens=250)
+        prompt = f"""
+        Write a brief, urgent letter in {lang} from the village chief to a detective, desperately requesting help with solving a recent murder in Bear Town.
+        The letter should be concise but convey a sense of fear, urgency, and desperation. Do not reveal any details about the suspects, the murder weapon, or the location of the murder.
+        Structure the letter in three parts:
+        1. Greeting: A formal but urgent salutation to the detective.
+        2. Content: The main body of the letter explaining the dire situation, the fear gripping the village, and pleading for immediate help. Emphasize the potential for more danger if help doesn't arrive soon.
+        3. Closing: A desperate closing plea, followed by a signature similar to "{closing_example}" but not necessarily identical.
 
-        return {
-            "letter": chief_letter
-        }
+        Return the letter in the following format, without any additional formatting or code blocks:
+        {{
+            "greeting": "Urgent greeting text here",
+            "content": "Desperate main content of the letter here",
+            "closing": "Final plea and signature here"
+        }}
+        """
+
+        chief_letter = get_gpt_response(prompt, max_tokens=300)
+
+        # Remove any code block formatting
+        chief_letter = re.sub(r'```json\s*|\s*```', '', chief_letter)
+
+        try:
+            letter_parts = json.loads(chief_letter)
+        except json.JSONDecodeError:
+            # If parsing fails, we'll use a simple split method as fallback
+            parts = chief_letter.split("\n")
+            letter_parts = {
+                "greeting": parts[0] if len(parts) > 0 else "",
+                "content": " ".join(parts[1:-1]) if len(parts) > 2 else "",
+                "closing": parts[-1] if len(parts) > 1 else closing_example
+            }
+
+        return letter_parts

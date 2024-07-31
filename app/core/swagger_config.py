@@ -19,11 +19,11 @@ class SwaggerConfig:
         }
         self.tags_metadata = [
             {
-                "name": "scenario",
+                "name": "SCENARIO",
                 "description": "게임 진행을 위한 시나리오 등을 생성합니다."
             },
             {
-                "name": "user",
+                "name": "USER",
                 "description": "사용자와 상호작용 할 수 있도록 답변을 생성합니다."
             },
             {
