@@ -7,6 +7,7 @@
         {"id": "Wanderer", "feature": {"en": "Wanderer", "ko": "떠돌이", "detail": {"en": "Travels between villages", "ko": "여러 마을을 떠돌아 다니는 떠돌이임"}}},
         {"id": "OldStyle", "feature": {"en": "OldStyle", "ko": "고어체", "detail": {"en": "Uses old-fashioned speech", "ko": "옛날 양식의 말투를 사용하여 대화함"}}},
         {"id": "Storyteller", "feature": {"en": "Storyteller", "ko": "이야기꾼", "detail": {"en": "Entertains others with interesting stories and legends", "ko": "흥미로운 이야기와 전설을 전하며 사람들을 즐겁게 함"}}},
+        {"id": "Explorer", "feature": {"en": "Explorer", "ko": "탐험가", "detail": {"en": "Enjoys exploring new places and cultures", "ko": "새로운 장소와 문화를 탐험하는 것을 좋아함"}}},
         {"id": "Naturalist", "feature": {"en": "Naturalist", "ko": "자연주의자", "detail": {"en": "Has deep knowledge and affection for nature and wildlife", "ko": "자연과 야생 동물에 대한 깊은 지식과 애정을 가짐"}}},
         {"id": "Humorous speech", "feature": {"en": "Humorous speech", "ko": "유머러스한 말투", "detail": {"en": "Often includes witty jokes in conversation", "ko": "대화 중에 종종 재치 있는 농담을 섞어 말함"}}},
         {"id": "Magician", "feature": {"en": "Magician", "ko": "마술사", "detail": {"en": "Surprises people with clever magic tricks and performances", "ko": "기발한 마술과 재치 있는 퍼포먼스로 사람들을 놀라게 함"}}},

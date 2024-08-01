@@ -6,7 +6,10 @@ from app.utils.game_utils import (
     create_context,
     get_feature_detail,
     get_name,
-    get_personality_detail
+    get_weapon_name,
+    get_location_name,
+    get_personality_detail,
+    get_feature_detail
 )
 
 # 게임 시나리오 생성
@@ -132,3 +135,127 @@ class ScenarioGeneration:
             }
 
         return letter_parts
+
+    # 알리바이와 목격자 정보를 생성하는 메서드
+    def generate_alibis_and_witness(self):
+        lang = self.game_state["language"]
+        alive_npcs = [npc for npc in self.game_state["npcs"] if self.game_state['alive'][npc['name']]]
+        victim_name = get_name(self.game_state["murdered_npc"]["name"], lang, self.names)
+        murder_location = get_location_name(self.game_state["murder_location"], self.places, lang)
+        murder_weapon = get_weapon_name(self.game_state["murder_weapon"], self.weapons, lang)
+
+        # 목격자 선택
+        witness = random.choice(alive_npcs)
+        witness_name = get_name(witness['name'], lang, self.names)
+        
+        alibis = {}
+        for npc in alive_npcs:
+            npc_name = get_name(npc['name'], lang, self.names)
+            personality = get_personality_detail(npc['personality'], self.personalities, lang)
+            feature = get_feature_detail(npc['feature'], self.features, lang)
+            
+            if npc == witness:
+                prompt = f"""
+                As an eyewitness in a murder mystery game set in Bear Town, create a brief account in {lang}.
+                You are {npc_name}, with the personality trait of being {personality} and the feature of {feature}.
+                You witnessed the murder of {victim_name} at {murder_location}.
+                Your account should:
+                1. Be vague about the killer's identity
+                2. Mention something unusual you noticed
+                3. Reflect your personality and feature in your statement
+                4. Be no longer than 3 sentences
+
+                Respond only with the eyewitness account, without any additional text.
+                """
+                eyewitness_info = get_gpt_response(prompt, max_tokens=150)
+                self.game_state['witness'] = {
+                    'name': npc_name,
+                    'information': eyewitness_info
+                }
+                alibis[npc_name] = f"{eyewitness_info}"
+            else:
+                prompt = f"""
+                Create a brief alibi in {lang} for an NPC named {npc_name} in a murder mystery game set in Bear Town.
+                The murder of {victim_name} occurred at {murder_location} using {murder_weapon}.
+                {npc_name} has the personality trait of being {personality} and the feature of {feature}.
+                The alibi should:
+                1. Be plausible but vague
+                2. Not provide a solid alibi for the time of the murder
+                3. Reflect the NPC's personality and feature
+                4. Be no longer than 2 sentences
+
+                Respond only with the alibi, without any additional text.
+                """
+                alibi = get_gpt_response(prompt, max_tokens=100)
+                alibis[npc_name] = alibi
+
+        self.game_state['alibis'] = alibis
+
+        return {
+            "witness": self.game_state['witness'],
+            "alibis": alibis
+        }
+
+    def update_game_state_with_murder(self):
+        lang = self.game_state["language"]
+        remaining_npcs = [npc for npc in self.game_state['npcs'] if self.game_state['alive'][npc['name']]]
+        if len(remaining_npcs) <= 2:
+            raise ValueError("Not enough NPCs to continue the game")
+
+        new_victim = random.choice(remaining_npcs)
+        for npc in self.game_state["npcs"]:
+            if npc["name"] == new_victim["name"]:
+                self.game_state['alive'][npc['name']] = False
+                break
+        self.game_state['murdered_npcs'].append({"name": new_victim['name'], "order": self.game_state['current_day'] + 1})
+
+        # 새로운 범행 도구와 장소를 할당
+        murderer = self.game_state['murderer']
+        new_weapon = random.choice(murderer["preferredWeapons"])
+        new_location = random.choice(murderer["preferredLocations"])
+        if 'murder_weapons' not in self.game_state:
+            self.game_state['murder_weapons'] = [new_weapon]
+        else:
+            self.game_state['murder_weapons'].append(new_weapon)
+        if 'murder_locations' not in self.game_state:
+            self.game_state['murder_locations'] = [new_location]
+        else:
+            self.game_state['murder_locations'].append(new_location)
+
+        self.game_state['current_day'] += 1
+
+        return {
+            "victim": get_name(new_victim['name'], lang, self.names),
+            "method": get_weapon_name(new_weapon, self.weapons, lang),
+            "crimeScene": get_location_name(new_location, self.places, lang),
+            "current_day": self.game_state['current_day']
+        }
+
+    def proceed_to_next_day(self):
+        murder_summary = self.update_game_state_with_murder()
+        alibis_and_witness = self.generate_alibis_and_witness()
+        
+        lang = self.game_state["language"]
+        victim_name = get_name(self.game_state["murdered_npc"]["name"], lang, self.names)
+        crime_scene = get_location_name(self.game_state["murder_location"], self.places, lang)
+        murder_weapon = get_weapon_name(self.game_state["murder_weapon"], self.weapons, lang)
+        
+        daily_summary = f"day {self.game_state['current_day']} - {crime_scene}에서 {victim_name}이(가) {murder_weapon}에 의해 살해됨."
+        
+        result = {
+            "answer": {
+                "victim": victim_name,
+                "crimeScene": crime_scene,
+                "method": murder_weapon,
+                "witness": alibis_and_witness["witness"]["name"],
+                "eyewitnessInformation": alibis_and_witness["witness"]["information"],
+                "dailySummary": daily_summary,
+                "alibis": [{"name": name, "alibi": alibi} for name, alibi in alibis_and_witness["alibis"].items()]
+            }
+        }
+        
+        # new_scenario = self.create_progress_scenario()
+        # result["answer"]["scenario"] = new_scenario
+        
+        return result
+    

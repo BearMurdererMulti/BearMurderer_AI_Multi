@@ -98,7 +98,7 @@
             "gender": "Female",
             "wealth": "High",
             "personality": "Skeptical",
-            "feature": "Scholar",
+            "feature": "Quiet",
             "preferredLocations": ["Library", "Office", "House"],
             "criminalScenario": "AcademicCuriosity"
         },
