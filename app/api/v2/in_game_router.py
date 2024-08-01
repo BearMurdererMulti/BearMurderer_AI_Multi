@@ -17,9 +17,9 @@ async def generate_questions(request: Request, question_data: game_schema.Questi
     try:
         questions = game_service.generate_npc_questions(
             question_data.gameNo, 
-            question_data.npc_name, 
-            question_data.keyword, 
-            question_data.keyword_type
+            question_data.npcName, 
+            question_data.keyWord, 
+            question_data.keyWordType
         )
         return {"questions": questions}
     except ValueError as e:
@@ -35,10 +35,10 @@ async def talk_to_npc(request: Request, answer_data: game_schema.AnswerRequest):
     try:
         response = game_service.talk_to_npc(
             answer_data.gameNo, 
-            answer_data.npc_name, 
-            answer_data.question_index, 
-            answer_data.keyword, 
-            answer_data.keyword_type
+            answer_data.npcName, 
+            answer_data.questionIndex, 
+            answer_data.keyWord, 
+            answer_data.keyWordType
         )
         return {"response": response}
     except ValueError as e:
