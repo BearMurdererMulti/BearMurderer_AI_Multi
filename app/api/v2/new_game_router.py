@@ -18,7 +18,7 @@ async def start_game(request: Request, game_data: game_schema.GameStartRequest):
         raise HTTPException(status_code=400, detail="Invalid language. Choose 'en' or 'ko'.")
     try:
         game_state = game_service.initialize_new_game(game_data)
-        return {"message": "New game started"}
+        return {"answer": game_state['first_blood']}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:

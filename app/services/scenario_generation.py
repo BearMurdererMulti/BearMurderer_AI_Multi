@@ -258,4 +258,18 @@ class ScenarioGeneration:
         # result["answer"]["scenario"] = new_scenario
         
         return result
-    
+
+
+    # 게임 생성 직후 첫번째 희생자를 반환하는 메서드
+    def get_first_blood(self):
+        lang = self.game_state["language"]
+        victim_name = get_name(self.game_state['murdered_npc']["name"], lang, self.names)
+        crime_scene = get_location_name(self.game_state["murder_location"], self.places, lang)
+        murder_weapon = get_weapon_name(self.game_state["murder_weapon"], self.weapons, lang)
+
+        result = {
+            "victim": victim_name,
+            "crimeScene": crime_scene,
+            "method": murder_weapon,
+        }
+        return result
