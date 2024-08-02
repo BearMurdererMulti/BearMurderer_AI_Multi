@@ -6,6 +6,8 @@ from app.services.question_generation import QuestionGeneration
 from app.services.hint_investigation import HintInvestigation
 from app.services.scenario_generation import ScenarioGeneration
 
+from app.services.interrogation import Interrogation
+
 # 여러 게임 상태 관리
 class GameService:
     def __init__(self):
@@ -14,6 +16,8 @@ class GameService:
         self.hint_investigations: dict[int, HintInvestigation] = {}
         self.scenario_generations: dict[int, ScenarioGeneration] = {}
         self.game_states: dict[int, dict] = {}
+
+        self.interrogations: dict[int, Interrogation] = {}
 
     # 새로운 게임을 시작하고 초기화하는 메서드
     def initialize_new_game(self, game_data: game_schema.GameStartRequest):
@@ -39,6 +43,15 @@ class GameService:
             game_management.weapons
         )
         self.scenario_generations[game_data.gameNo] = ScenarioGeneration(
+            game_state,
+            game_management.personalities,
+            game_management.features,
+            game_management.weapons,
+            game_management.places,
+            game_management.names
+        )
+
+        self.interrogations[game_data.gameNo] = Interrogation(
             game_state,
             game_management.personalities,
             game_management.features,
@@ -131,3 +144,18 @@ class GameService:
         self.game_states[gameNo].update(alibis_and_witness)
         
         return alibis_and_witness
+    
+
+    #========================================================================================
+
+    # 취조를 시작하는 메서드(증거 제공)
+    def new_interrogation(self, gameNo, npc_name, weapon):
+        interrogation: Interrogation = self.interrogations[gameNo]
+        interrogation.start_interrogation(npc_name, weapon)
+
+    # 취조 시 자유 대화하는 메서드
+    def generation_interrogation_response(self, gameNo, npc_name, content):
+        interrogation: Interrogation = self.interrogations[gameNo]
+
+        response = interrogation.generate_interrogation_response(npc_name, content)
+        return response
