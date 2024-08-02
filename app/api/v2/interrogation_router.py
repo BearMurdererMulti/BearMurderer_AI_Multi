@@ -10,7 +10,7 @@ from pydantic import BaseModel
 
 class NewInterRequest(BaseModel):
     gameNo: int
-    npc_name: str = "박동식"
+    npcName: str = "박동식"
     weapon: str = "독약"
 
 class NewInterResponse(BaseModel):
@@ -18,7 +18,7 @@ class NewInterResponse(BaseModel):
 
 class ConversationRequest(BaseModel):
     gameNo: int
-    npc_name: str = "박동식"
+    npcName: str = "박동식"
     content: str
 
 class ConversationResponse(BaseModel):
@@ -31,7 +31,7 @@ class ConversationResponse(BaseModel):
             )
 async def new_interrogation(request: Request, input: NewInterRequest):
     game_service: GameService = request.app.state.game_service
-    game_service.new_interrogation(input.gameNo, input.npc_name, input.weapon)
+    game_service.new_interrogation(input.gameNo, input.npcName, input.weapon)
 
     return {"message": "New interrogation started"}
 
@@ -42,7 +42,7 @@ async def new_interrogation(request: Request, input: NewInterRequest):
 async def interrogation(request: Request, input: ConversationRequest):
     game_service: GameService = request.app.state.game_service
     try:
-        response = game_service.generation_interrogation_response(input.gameNo, input.npc_name, input.content)
+        response = game_service.generation_interrogation_response(input.gameNo, input.npcName, input.content)
     except TypeError as e:
         raise HTTPException(status_code=404, detail=f"interrogation not found: {e}")
     return response
