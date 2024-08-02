@@ -10,7 +10,8 @@ from app.utils.game_utils import (
     get_weapon_name,
     get_location_name
 )
-
+from app.core.logger_config import setup_logger
+logger = setup_logger()
 
 class Interrogation:
     def __init__(self, game_state, personalities, features, weapons, places, names):
@@ -37,6 +38,8 @@ class Interrogation:
             }
 
     def generate_interrogation_response(self, npc_name: str, content: str):
+        logger.info(f"▶️  User message received: npc_name: {npc_name}, contents: {content}")
+
         npc = next((npc for npc in self.game_state["npcs"] if get_name(npc["name"], self.game_state["language"], self.names) == npc_name), None)
 
         conversation_history = self.game_state['interrogation']['conversation_history']
@@ -63,15 +66,15 @@ class Interrogation:
 
         response_content = get_gpt_response(response_prompt, max_tokens=150)
         response = json.loads(response_content)
-        print(response['response'])
-        print(response['heartRateDelta'])
+
 
         current_heart_rate += int(response['heartRateDelta'])
+        current_heart_rate = 130 if current_heart_rate > 130 else current_heart_rate
+        current_heart_rate = 60 if current_heart_rate < 60 else current_heart_rate
         self.game_state['interrogation']['heart_rate'] = current_heart_rate
 
         conversation_history.append({"role": "user", "content": content})
         conversation_history.append({"role": npc_name, "content": response_content})
 
-        print(response)
-
+        logger.info(f"▶️  Bot response sent: npc_name: {npc_name}, heart_rate: {current_heart_rate}, response: {response['response']}")
         return {"response": response['response'], "heartRate": current_heart_rate}

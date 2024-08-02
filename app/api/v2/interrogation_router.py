@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, HTTPException
 
 from app.services.game_service import GameService
 
@@ -13,12 +13,21 @@ class NewInterRequest(BaseModel):
     npc_name: str = "박동식"
     weapon: str = "독약"
 
+class NewInterResponse(BaseModel):
+    message: str
+
 class ConversationRequest(BaseModel):
     gameNo: int
     npc_name: str = "박동식"
     content: str
 
+class ConversationResponse(BaseModel):
+    response: str
+    heartRate: int
+
 @router.post("/new", 
+             description="새로운 취조를 시작하는 API 입니다.",
+             response_model=NewInterResponse
             )
 async def new_interrogation(request: Request, input: NewInterRequest):
     game_service: GameService = request.app.state.game_service
@@ -26,10 +35,14 @@ async def new_interrogation(request: Request, input: NewInterRequest):
 
     return {"message": "New interrogation started"}
 
-
 @router.post("/conversation", 
+             description="취조에서 자유대화하는 API 입니다.",
+             response_model=ConversationResponse
             )
-async def new_interrogation(request: Request, input: ConversationRequest):
+async def interrogation(request: Request, input: ConversationRequest):
     game_service: GameService = request.app.state.game_service
-    response = game_service.generation_interrogation_response(input.gameNo, input.npc_name, input.content)
+    try:
+        response = game_service.generation_interrogation_response(input.gameNo, input.npc_name, input.content)
+    except TypeError as e:
+        raise HTTPException(status_code=404, detail=f"interrogation not found: {e}")
     return response
