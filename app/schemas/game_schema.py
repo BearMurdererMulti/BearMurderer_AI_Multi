@@ -28,23 +28,64 @@ class GameState(BaseModel):
     current_questions: List[str] = []
     user_language: str = "en"
 
+class NPCInfo(BaseModel):
+    npcName: str
+    npcJob: str
+
 class GameStartRequest(BaseModel):
-    gameNo: int
+    gameNo: int = 0
     language: str = "ko"
-    npc_count: int = 6
+    characters: List[NPCInfo] = [
+    {
+        "npcName": "김쿵야",
+        "npcJob": "Resident"
+    },
+    {
+        "npcName": "박동식",
+        "npcJob": "Resident"
+    },
+    {
+        "npcName": "짠짠영",
+        "npcJob": "Murderer"
+    },
+    {
+        "npcName": "태근티비",
+        "npcJob": "Resident"
+    },
+    {
+        "npcName": "박윤주",
+        "npcJob": "Resident"
+    },
+    {
+        "npcName": "테오",
+        "npcJob": "Resident"
+    },
+    {
+        "npcName": "소피아",
+        "npcJob": "Resident"
+    },
+    {
+        "npcName": "마르코",
+        "npcJob": "Resident"
+    },
+    {
+        "npcName": "알렉스",
+        "npcJob": "Resident"
+    }
+]
 
 class GameRequest(BaseModel):
     gameNo: int
 
 class QuestionRequest(BaseModel):
     gameNo: int
-    npc_name: str
-    keyword: str
-    keyword_type: str = "weapon"
+    npcName: str
+    keyWord: str
+    keyWordType: str = "weapon"
 
 class AnswerRequest(BaseModel):
     gameNo: int
-    npc_name: str
-    question_index: int
-    keyword: str
-    keyword_type: str = "weapon"
+    npcName: str
+    questionIndex: int
+    keyWord: str
+    keyWordType: str = "weapon"

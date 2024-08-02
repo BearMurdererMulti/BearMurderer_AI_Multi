@@ -17,10 +17,12 @@ async def start_game(request: Request, game_data: game_schema.GameStartRequest):
     if game_data.language not in ["en", "ko"]:
         raise HTTPException(status_code=400, detail="Invalid language. Choose 'en' or 'ko'.")
     try:
-        game_service.initialize_new_game(game_data.gameNo, game_data.language, game_data.npc_count)
+        game_state = game_service.initialize_new_game(game_data)
+        return {"answer": game_state['first_blood']}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
-    return {"message": "New game started"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
 
 # 시나리오를 생성하는 라우터
 @router.post("/generate-scenario", 
@@ -77,5 +79,18 @@ def save_progress(request: Request, game_data: game_schema.GameRequest):
         game_state = game_service.get_game_status(game_data.gameNo)
         result = game_service.save_game_progress(game_data.gameNo, game_state)
         return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# 알리바이와 목격자 정보를 생성하는 라우터
+@router.post("/generate-alibis-and-witness", 
+            description="해당 게임의 알리바이와 목격자 정보를 생성하는 API입니다.")
+async def generate_alibis_and_witness(request: Request, game_data: game_schema.GameRequest):
+    game_service: GameService = request.app.state.game_service
+    try:
+        alibis_and_witness = game_service.generate_alibis_and_witness(game_data.gameNo)
+        return alibis_and_witness
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
