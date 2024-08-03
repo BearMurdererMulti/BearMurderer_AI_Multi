@@ -34,6 +34,10 @@ class SwaggerConfig:
                 "name": "IN_GAME",
                 "description": "게임 중 사용되는 API입니다."
             },
+            {
+                "name": "INTERROGATION",
+                "description": "용의자 취조에 사용되는 API입니다."
+            },
         ]
 
     def get_config(self):
