@@ -60,6 +60,9 @@ class GameService:
             game_management.names
         )
 
+        first_blood = self.scenario_generations[game_data.gameNo].get_first_blood()
+        game_state['first_blood'] = first_blood
+
         return game_state
 
     # 게임 상태를 반환하는 메서드
