@@ -78,7 +78,9 @@ class GameManagement:
             "conversations": [],
             "current_day": 1,
             "alive": {npc["name"]: (npc != murdered_npc) for npc in selected_npcs},
-            "murdered_npcs": [{"name": murdered_npc["name"], "day": 1}]
+            "murdered_npcs": [{"name": murdered_npc["name"], "day": 1}],
+
+            "interrogation": None
         }
 
         return self.game_state
