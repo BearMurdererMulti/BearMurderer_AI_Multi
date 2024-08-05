@@ -25,7 +25,6 @@ class Interrogation:
     def start_interrogation(self, npc_name, weapon):
         npc = next((npc for npc in self.game_state["npcs"] if get_name(npc["name"], self.game_state["language"], self.names) == npc_name), None)
         weapon_en = next((w['weapon']['en'] for w in self.weapons if w['weapon']['ko'] == weapon), None)
-        print(npc['preferredWeapons'])
         heart_rate = 60
         if weapon_en in npc['preferredWeapons']:
             heart_rate = 80
@@ -38,9 +37,6 @@ class Interrogation:
             }
 
     def generate_interrogation_response(self, npc_name: str, content: str):
-        print(self.game_state['murdered_npc'])
-        print(self.game_state['murder_weapon'])
-        print(self.game_state['murder_location'])
         logger.info(f"▶️  User message received: npc_name: {npc_name}, contents: {content}")
 
         npc = next((npc for npc in self.game_state["npcs"] if get_name(npc["name"], self.game_state["language"], self.names) == npc_name), None)
