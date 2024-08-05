@@ -121,22 +121,26 @@ class GameService:
         return self.hint_investigations[gameNo].filter_suspects(weapon, location)
 
     # 다음 날로 넘어가는 메서드
-    def proceed_to_next_day(self, gameNo):
+    def proceed_to_next_day(self, gameNo: int, livingCharacters: List[game_schema.LivingNPCInfo]):
         if gameNo not in self.game_states:
             raise ValueError("Game ID not found")
 
+        game_state = self.game_states[gameNo]
         scenario_generation = self.scenario_generations[gameNo]
-        murder_summary = scenario_generation.proceed_to_next_day()
-        
-        # 게임 상태 업데이트
+
+        # LivingNPCInfo 객체를 딕셔너리로 변환
+        living_characters_dict = [
+            {"name": npc.name, "status": npc.status, "job": npc.job}
+            for npc in livingCharacters
+        ]
+
+        # ScenarioGeneration 클래스의 메서드를 호출하여 게임 상태 업데이트 및 새로운 시나리오 생성
+        murder_summary = scenario_generation.proceed_to_next_day(living_characters_dict)
+
+        # 업데이트된 게임 상태 저장
         self.game_states[gameNo] = scenario_generation.game_state
 
         return murder_summary
-
-    def filter_game_suspects(self, gameNo, weapon, location):
-        if gameNo not in self.hint_investigations:
-            raise ValueError(f"Game ID {gameNo} not found in hint investigations.")
-        return self.hint_investigations[gameNo].filter_suspects(weapon, location)
     
     # 알리바이와 목격자 정보를 생성하는 메서드
     def generate_alibis_and_witness(self, gameNo):
@@ -147,6 +151,35 @@ class GameService:
         self.game_states[gameNo].update(alibis_and_witness)
         
         return alibis_and_witness
+    
+    def end_game(self, gameNo, game_result):
+        if gameNo not in self.game_states:
+            raise ValueError("Game ID not found")
+        
+        game_state = self.game_states[gameNo]
+        scenario_generation = self.scenario_generations[gameNo]
+        lang = game_state["language"]
+        
+        if game_result == "WIN":
+            chief_letter = scenario_generation.generate_chief_win_letter()
+            murderer_letter = scenario_generation.generate_murderer_win_letter()
+            survivors_letters = scenario_generation.generate_survivors_letter()
+            return {
+                "result": "WIN",
+                "chief_letter": chief_letter,
+                "murderer_letter": murderer_letter,
+                "survivors_letters": survivors_letters
+            }
+        elif game_result == "LOSE":
+            chief_letter = scenario_generation.generate_chief_lose_letter()
+            murderer_letter = scenario_generation.generate_murderer_lose_letter()
+            return {
+                "result": "LOSE",
+                "chief_letter": chief_letter,
+                "murderer_letter": murderer_letter
+            }
+        else:
+            raise ValueError("Invalid game result")
     
 
     #========================================================================================
