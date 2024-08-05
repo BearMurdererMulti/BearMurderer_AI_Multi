@@ -59,6 +59,7 @@ class Interrogation:
             f"If the heart rate is between 80 and 120, respond normally and cooperatively. "
             f"If the heart rate is above 120, refuse to answer and show signs of distress. "
             f"The response should clearly reflect their personality and feature. "
+            f'The murdered person was {self.game_state["murdered_npc"]}, the murder weapon was {self.game_state["murder_weapon"]}, and the murder took place at {self.game_state["murder_location"]}. '
             f'Provide the response in the format(json): {{"response": str, "heartRateDelta": int}}\n\n'
             f"Conversation History:\n{formatted_conversation_history}\n\n"
             f"The NPC is asked: '{content}'"

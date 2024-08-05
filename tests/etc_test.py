@@ -35,23 +35,37 @@ def test_get_test_token():
     data = response.json()
     print(json.dumps(data, indent=4, ensure_ascii=False))
 
-    request_body = {"gameNo": game_no}
-    response = client.post("/api/v2/new-game/generate-scenario", json=request_body)
+    request_body = {
+        "gameNo": 0,
+        "npcName": "박동식",
+        "weapon": "독약"
+    }
+    response = client.post("/api/v2/interrogation/new", json=request_body)
+    assert response.status_code == 200
+    data = response.json()
+    print(json.dumps(data, indent=4, ensure_ascii=False))
+    
+    request_body = {
+        "gameNo": game_no,
+        "npcName": "박동식",
+        "content": "안녕?"
+    }
+    response = client.post("/api/v2/interrogation/conversation", json=request_body)
     assert response.status_code == 200
     data = response.json()
     print(json.dumps(data, indent=4, ensure_ascii=False))
 
-    request_body = {"gameNo": game_no}
-    response = client.post("/api/v2/new-game/generate-chief-letter", json=request_body)
-    assert response.status_code == 200
-    data = response.json()
-    print(json.dumps(data, indent=4, ensure_ascii=False))
+    # request_body = {"gameNo": game_no}
+    # response = client.post("/api/v2/new-game/generate-chief-letter", json=request_body)
+    # assert response.status_code == 200
+    # data = response.json()
+    # print(json.dumps(data, indent=4, ensure_ascii=False))
 
-    request_body = {"gameNo": game_no}
-    response = client.post("/api/v2/new-game/status", json=request_body)
-    assert response.status_code == 200
-    data = response.json()
-    print(json.dumps(data, indent=4, ensure_ascii=False))
+    # request_body = {"gameNo": game_no}
+    # response = client.post("/api/v2/new-game/status", json=request_body)
+    # assert response.status_code == 200
+    # data = response.json()
+    # print(json.dumps(data, indent=4, ensure_ascii=False))
 
 
     assert False
