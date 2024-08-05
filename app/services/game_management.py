@@ -66,20 +66,19 @@ class GameManagement:
 
         self.game_state = {
             "language": language,
-            "suspects": [npc for npc in selected_npcs if npc != murdered_npc],
+            "suspects": selected_npcs,
             "murderer": murderer_npc,
             "murdered_npc": murdered_npc,
             "murder_weapon": murder_weapon,
             "murder_location": murder_location,
             "conversations_left": 5,
-            "npcs": [npc for npc in selected_npcs if npc != murdered_npc],
+            "npcs": selected_npcs,
             "places": self.places,
             "weapons": self.weapons,
             "conversations": [],
             "current_day": 1,
             "alive": {npc["name"]: (npc != murdered_npc) for npc in selected_npcs},
             "murdered_npcs": [{"name": murdered_npc["name"], "day": 1}],
-
             "interrogation": None
         }
 
