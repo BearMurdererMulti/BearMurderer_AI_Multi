@@ -60,10 +60,10 @@ def get_game_status(request: Request, game_data: game_schema.GameRequest):
 # 게임 진행을 다음 날로 넘기는 라우터
 @router.post("/next_day", 
             description="해당 게임의 상태를 다음 날로 넘기는 API 입니다.")
-def next_day(request: Request, game_data: game_schema.GameRequest):
+def next_day(request: Request, game_data: game_schema.NextDayRequest):
     game_service: GameService = request.app.state.game_service
     try:
-        result = game_service.proceed_to_next_day(game_data.gameNo)
+        result = game_service.proceed_to_next_day(game_data.gameNo, game_data.livingCharacters)
         return result
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -94,3 +94,16 @@ async def generate_alibis_and_witness(request: Request, game_data: game_schema.G
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# 게임을 종료하고 편지를 생성하는 라우터
+@router.post("/end_game", 
+            description="게임을 종료하고 결과에 따른 편지를 생성하는 API입니다.")
+async def end_game(request: Request, game_data: game_schema.GameEndRequest):
+    game_service: GameService = request.app.state.game_service
+    try:
+        result = game_service.end_game(game_data.gameNo, game_data.gameResult)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
