@@ -144,8 +144,9 @@ class ScenarioGeneration:
         murder_location = get_location_name(self.game_state["murder_location"], self.places, lang)
         murder_weapon = get_weapon_name(self.game_state["murder_weapon"], self.weapons, lang)
 
-        # 목격자 선택
-        witness = random.choice(alive_npcs)
+        # 목격자 선택 (범인 제외)
+        potential_witnesses = [npc for npc in alive_npcs if npc['name'] != self.game_state['murderer']['name']]
+        witness = random.choice(potential_witnesses)
         witness_name = get_name(witness['name'], lang, self.names)
         
         alibis = {}
@@ -173,19 +174,32 @@ class ScenarioGeneration:
                     'information': eyewitness_info
                 }
                 alibis[npc_name] = f"{eyewitness_info}"
+            elif npc['name'] == self.game_state['murderer']['name']:
+                prompt = f"""
+                Create a convincing alibi in {lang} for the murderer {npc_name} in a murder mystery game set in Bear Town.
+                {npc_name} has the personality trait of being {personality} and the feature of {feature}.
+                The alibi should:
+                1. Be plausible and avoid any connection to the crime scene ({murder_location})
+                2. Reflect the NPC's personality and feature
+                3. Be detailed enough to seem credible
+                4. Be no longer than 3 sentences
+
+                Respond only with the alibi, without any additional text.
+                """
             else:
                 prompt = f"""
                 Create a brief alibi in {lang} for an NPC named {npc_name} in a murder mystery game set in Bear Town.
-                The murder of {victim_name} occurred at {murder_location} using {murder_weapon}.
                 {npc_name} has the personality trait of being {personality} and the feature of {feature}.
                 The alibi should:
-                1. Be plausible but vague
-                2. Not provide a solid alibi for the time of the murder
+                1. Be plausible and can be related to any location or activity
+                2. Not necessarily provide a solid alibi for the time of the murder
                 3. Reflect the NPC's personality and feature
                 4. Be no longer than 2 sentences
 
                 Respond only with the alibi, without any additional text.
                 """
+            
+            if npc != witness:
                 alibi = get_gpt_response(prompt, max_tokens=100)
                 alibis[npc_name] = alibi
 
@@ -198,9 +212,15 @@ class ScenarioGeneration:
 
     def update_game_state_with_murder(self):
         lang = self.game_state["language"]
+        
+        print("Current npcs:", [get_name(npc['name'], 'ko', self.names) for npc in self.game_state['npcs']])
+        print("Current alive:", {get_name(name, 'ko', self.names): status for name, status in self.game_state['alive'].items()})
+        
         remaining_npcs = [npc for npc in self.game_state['npcs'] if self.game_state['alive'][npc['name']]]
+        print("Remaining NPCs:", [get_name(npc['name'], 'ko', self.names) for npc in remaining_npcs])
+        
         if len(remaining_npcs) <= 2:
-            raise ValueError("Not enough NPCs to continue the game")
+            raise ValueError(f"Not enough NPCs to continue the game. Only {len(remaining_npcs)} NPCs left.")
 
         new_victim = random.choice(remaining_npcs)
         for npc in self.game_state["npcs"]:
@@ -231,17 +251,33 @@ class ScenarioGeneration:
             "current_day": self.game_state['current_day']
         }
 
-    def proceed_to_next_day(self):
-        murder_summary = self.update_game_state_with_murder()
+    # 다음 날로 넘어가는 메서드
+    def proceed_to_next_day(self, living_characters):
+        print("Initial living_characters:", [npc['name'] for npc in living_characters])
+
+        # 게임 상태 업데이트
+        self.update_game_state(living_characters)
+
+        # 새로운 피해자 선택
+        self.select_new_victim()
+
+        # 새로운 범행 도구와 장소 선택
+        self.select_new_murder_details()
+
+        # 게임 상태 추가 업데이트
+        self.game_state['current_day'] += 1
+
+        # 시나리오 생성 및 알리바이 생성
+        murder_summary = self.create_murder_summary()
         alibis_and_witness = self.generate_alibis_and_witness()
-        
+
         lang = self.game_state["language"]
         victim_name = get_name(self.game_state["murdered_npc"]["name"], lang, self.names)
         crime_scene = get_location_name(self.game_state["murder_location"], self.places, lang)
         murder_weapon = get_weapon_name(self.game_state["murder_weapon"], self.weapons, lang)
-        
+
         daily_summary = f"day {self.game_state['current_day']} - {crime_scene}에서 {victim_name}이(가) {murder_weapon}에 의해 살해됨."
-        
+
         result = {
             "answer": {
                 "victim": victim_name,
@@ -253,12 +289,46 @@ class ScenarioGeneration:
                 "alibis": [{"name": name, "alibi": alibi} for name, alibi in alibis_and_witness["alibis"].items()]
             }
         }
-        
-        # new_scenario = self.create_progress_scenario()
-        # result["answer"]["scenario"] = new_scenario
-        
+
         return result
 
+    def update_game_state(self, living_characters):
+        for npc in self.game_state['npcs']:
+            npc_korean_name = get_name(npc['name'], self.game_state['language'], self.names)
+            living_npc = next((lc for lc in living_characters if lc['name'] == npc_korean_name), None)
+            
+            if living_npc:
+                npc['alive'] = living_npc['status'] == "ALIVE"
+            else:
+                npc['alive'] = False
+            
+            self.game_state['alive'][npc['name']] = npc['alive']
+
+        # NPC 목록 업데이트
+        self.game_state['alive'][npc['name']] = npc['alive']
+        print("Updated npcs:", [f"{get_name(npc['name'], self.game_state['language'], self.names)} - Alive: {npc['alive']}" for npc in self.game_state['npcs']])
+        print("Updated alive:", self.game_state['alive'])
+
+    def select_new_victim(self):
+        murderer_id = self.game_state['murderer']['name']
+        potential_victims = [npc for npc in self.game_state['npcs'] if npc['name'] != murderer_id and npc['alive']]
+        
+        if not potential_victims:
+            raise ValueError("No potential victims left")
+
+        new_victim = random.choice(potential_victims)
+        new_victim['alive'] = False
+        self.game_state['alive'][new_victim['name']] = False
+        self.game_state['murdered_npc'] = new_victim
+        self.game_state['murdered_npcs'].append({"name": new_victim['name'], "day": self.game_state['current_day'] + 1})
+
+    def select_new_murder_details(self):
+        self.game_state['murder_weapon'] = random.choice(self.game_state['murderer']["preferredWeapons"])
+        self.game_state['murder_location'] = random.choice(self.game_state['murderer']["preferredLocations"])
+
+    def create_murder_summary(self):
+        # 이 메서드는 필요에 따라 구현하세요. 현재는 빈 딕셔너리를 반환합니다.
+        return {}
 
     # 게임 생성 직후 첫번째 희생자를 반환하는 메서드
     def get_first_blood(self):
@@ -273,3 +343,11 @@ class ScenarioGeneration:
             "method": murder_weapon,
         }
         return result
+
+    # NPC 한글 이름을 ID로 변환하는 메서드
+    def get_npc_id_by_korean_name(self, korean_name):
+        for name in self.names:
+            if name['name']['ko'] == korean_name:
+                return name['id']
+        print(f"Warning: No matching ID found for Korean name '{korean_name}'")
+        return None

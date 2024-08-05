@@ -89,3 +89,58 @@ class AnswerRequest(BaseModel):
     questionIndex: int
     keyWord: str
     keyWordType: str = "weapon"
+
+class LivingNPCInfo(BaseModel):
+    name: str
+    job: str
+    status: str
+
+class NextDayRequest(BaseModel):
+    gameNo: int
+    livingCharacters: List[LivingNPCInfo] = [
+    {
+        "name": "김쿵야",
+        "job": "Resident",
+        "status": "ALIVE"
+    },
+    {
+        "name": "박동식",
+        "job": "Resident",
+        "status": "ALIVE"
+    },
+    {
+        "name": "짠짠영",
+        "job": "Murderer",
+        "status": "ALIVE"
+    },
+    {
+        "name": "태근티비",
+        "job": "Resident",
+        "status": "ALIVE"
+    },
+    {
+        "name": "박윤주",
+        "job": "Resident",
+        "status": "ALIVE"
+    },
+    {
+        "name": "테오",
+        "job": "Resident",
+        "status": "DEAD"
+    },
+    {
+        "name": "소피아",
+        "job": "Resident",
+        "status": "DEAD"
+    },
+    {
+        "name": "마르코",
+        "job": "Resident",
+        "status": "DEAD"
+    },
+    {
+        "name": "알렉스",
+        "job": "Resident",
+        "status": "DEAD"
+    }
+]
