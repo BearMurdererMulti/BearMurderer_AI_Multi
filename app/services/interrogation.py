@@ -24,7 +24,8 @@ class Interrogation:
 
     def start_interrogation(self, npc_name, weapon):
         npc = next((npc for npc in self.game_state["npcs"] if get_name(npc["name"], self.game_state["language"], self.names) == npc_name), None)
-        weapon_en = next((w['weapon']['en'] for w in self.weapons if w['weapon']['ko'] == weapon), None)
+        weapon_en = next((w['id'] for w in self.weapons if w['weapon']['ko'] == weapon), None)
+
         heart_rate = 60
         if weapon_en in npc['preferredWeapons']:
             heart_rate = 80
@@ -53,7 +54,7 @@ class Interrogation:
             f"The NPC is currently being interrogated, accused of being the murderer in the village. "
             f"The NPC's current heart rate is {current_heart_rate} bpm. The NPC's heart rate changes depending on the sharpness of the question. "
             f"Sharp questions will increase the heart rate, while irrelevant questions will decrease it. "
-            f"The change in heart rate (delta) ranges from -10 to +10 bpm. "
+            f"The change in heart rate (delta) ranges from -10 to +10 bpm but cannot be 0. The delta must be at least -1 or +1. "
             f"If the heart rate is below 80, respond in a dismissive and arrogant manner with a short answer. "
             f"If the heart rate is between 80 and 120, respond normally and cooperatively. "
             f"If the heart rate is above 120, refuse to answer and show signs of distress. "
