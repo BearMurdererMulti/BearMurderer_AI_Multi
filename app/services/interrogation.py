@@ -24,7 +24,7 @@ class Interrogation:
 
     def start_interrogation(self, npc_name, weapon):
         npc = next((npc for npc in self.game_state["npcs"] if get_name(npc["name"], self.game_state["language"], self.names) == npc_name), None)
-        weapon_en = next((w['weapon']['en'] for w in self.weapons if w['weapon']['ko'] == weapon), None)
+        weapon_en = next((w['id'] for w in self.weapons if w['weapon']['ko'] == weapon), None)
 
         heart_rate = 60
         if weapon_en in npc['preferredWeapons']:
