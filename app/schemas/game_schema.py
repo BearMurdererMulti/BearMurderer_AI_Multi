@@ -144,3 +144,7 @@ class NextDayRequest(BaseModel):
         "status": "DEAD"
     }
 ]
+
+class GameEndRequest(BaseModel):
+    gameNo: int
+    gameResult: str = "WIN"

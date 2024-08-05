@@ -351,3 +351,155 @@ class ScenarioGeneration:
                 return name['id']
         print(f"Warning: No matching ID found for Korean name '{korean_name}'")
         return None
+
+    # 편지 내용을 생성하고 형식을 맞추는 메서드
+    def generate_letter(self, prompt, receiver, sender, max_tokens=300):
+        content = get_gpt_response(prompt, max_tokens=max_tokens)
+        
+        letter_parts = {
+            "receiver": f"{receiver}\n",
+            "content": f"{content.strip()}\n",
+            "sender": f"{sender}\n"
+        }
+        
+        return letter_parts
+
+    # 승리 시 촌장의 감사 편지를 생성하는 메서드
+    def generate_chief_win_letter(self):
+        lang = self.game_state["language"]
+        receiver = "탐정" if lang == "ko" else "Detective"
+        sender = "베어타운 촌장" if lang == "ko" else "Chief of Bear Town"
+
+        prompt = f"""
+        Write a thank you letter in {lang} from the village chief of Bear Town to the detective who solved the murder case.
+        The letter should:
+        1. Express deep gratitude for solving the case
+        2. Mention the relief and joy of the villagers
+        3. Invite the detective to visit again under better circumstances
+        4. Be entirely in {'Korean' if lang == 'ko' else 'English'}
+        5. Do not include any closing remarks like '올림' or 'Sincerely'
+        """
+
+        return self.generate_letter(prompt, receiver, sender)
+
+    # 패배 시 촌장의 원망 편지를 생성하는 메서드
+    def generate_chief_lose_letter(self):
+        lang = self.game_state["language"]
+        receiver = "탐정" if lang == "ko" else "Detective"
+        sender = "베어타운 촌장" if lang == "ko" else "Chief of Bear Town"
+
+        prompt = f"""
+        Task: Write a disappointed and accusatory letter from the village chief to the detective who failed to solve the murder case.
+        Language: {"Korean" if lang == "ko" else "English"}
+
+        Letter requirements:
+        1. Start with a cold and formal greeting
+        2. Express deep disappointment and frustration about the detective's failure
+        3. Emphasize the consequences of the detective's incompetence (e.g., more victims, widespread fear)
+        4. Directly blame the detective for the continued suffering of the villagers
+        5. Mention how the village trusted and depended on the detective, only to be let down
+        6. Suggest that the detective's reputation will be ruined because of this failure
+        7. End with a bitter and regretful tone, implying the detective should feel guilty
+        8. Be 5-6 sentences long
+        9. Do not include any closing remarks like '올림' or 'Sincerely'
+
+        The letter should make the detective (player) feel responsible and guilty for failing the village.
+        Do not include any explanations or additional text. Write only the letter content.
+        """
+
+        return self.generate_letter(prompt, receiver, sender)
+
+    # 승리 시 생존자들의 감사 편지를 생성하는 메서드
+    def generate_survivors_letter(self):
+        lang = self.game_state["language"]
+        murderer = self.game_state["murderer"]
+        surviving_npcs = [npc for npc in self.game_state["npcs"] if self.game_state['alive'][npc['name']] and npc != murderer]
+        
+        letters = []
+        for npc in surviving_npcs:
+            npc_name = get_name(npc['name'], lang, self.names)
+            personality = get_personality_detail(npc['personality'], self.personalities, lang)
+            feature = get_feature_detail(npc['feature'], self.features, lang)
+            
+            receiver = "탐정" if lang == "ko" else "Detective"
+            sender = f"{npc_name}" if lang == "ko" else f"{npc_name}"
+            
+            prompt = f"""
+            Write a thank you letter in {lang} from an NPC named {npc_name} in Bear Town to the detective who solved the murder case.
+            The NPC has the personality trait of being {personality} and the feature of {feature}.
+            The letter should:
+            1. Express gratitude and relief
+            2. Mention how the detective's work has affected them personally
+            3. Reflect the NPC's unique personality and feature
+            4. Be entirely in {'Korean' if lang == 'ko' else 'English'}
+            5. Do not include any closing remarks like '올림' or 'Sincerely'
+            """
+            
+            letter = self.generate_letter(prompt, receiver, sender, max_tokens=300)
+            letters.append({"name": npc_name, "letter": letter})
+        
+        return letters
+
+    # 승리 시 범인의 협박 편지를 생성하는 메서드
+    def generate_murderer_win_letter(self):
+        lang = self.game_state["language"]
+        murderer = self.game_state["murderer"]
+        murderer_name = get_name(murderer['name'], lang, self.names)
+        personality = get_personality_detail(murderer['personality'], self.personalities, lang)
+        feature = get_feature_detail(murderer['feature'], self.features, lang)
+
+        receiver = "탐정" if lang == "ko" else "Detective"
+        sender = f"{murderer_name}" if lang == "ko" else f"{murderer_name}"
+
+        prompt = f"""
+        Task: Write a threatening letter from a caught murderer to the detective who solved the case.
+        Murderer's name: {murderer_name}
+        Murderer's personality: {personality}
+        Murderer's unique feature: {feature}
+        Language: {"Korean" if lang == "ko" else "English"}
+
+        Letter requirements:
+        1. Start with a mocking or taunting greeting
+        2. Express anger at being caught, but also twisted admiration for the detective's skills
+        3. Include at least one explicit threat of future revenge or crime, even from prison
+        4. Suggest knowledge of personal details about the detective or their loved ones
+        5. Create an unsettling and lingering sense of danger
+        6. Be 4-5 sentences long
+        7. Do not include any closing remarks like '올림' or 'Sincerely'
+
+        Do not include any explanations or additional text. Write only the letter content.
+        """
+
+        return self.generate_letter(prompt, receiver, sender, max_tokens=250)
+
+    # 패배 시 범인의 놀림 편지를 생성하는 메서드
+    def generate_murderer_lose_letter(self):
+        lang = self.game_state["language"]
+        murderer = self.game_state["murderer"]
+        murderer_name = get_name(murderer['name'], lang, self.names)
+        personality = get_personality_detail(murderer['personality'], self.personalities, lang)
+        feature = get_feature_detail(murderer['feature'], self.features, lang)
+
+        receiver = "탐정" if lang == "ko" else "Detective"
+        sender = f"{murderer_name}" if lang == "ko" else f"{murderer_name}"
+
+        prompt = f"""
+        Task: Write a mocking letter from an escaped murderer to the detective who failed to solve the case.
+        Murderer's name: {murderer_name}
+        Murderer's personality: {personality}
+        Murderer's unique feature: {feature}
+        Language: {"Korean" if lang == "ko" else "English"}
+
+        Letter requirements:
+        1. Start with a sarcastic or insulting greeting
+        2. Openly ridicule the detective's failure to catch the murderer
+        3. Boast about outsmarting the detective and escaping justice
+        4. Include at least one taunt about future crimes the detective won't be able to stop
+        5. Reflect the murderer's unique personality and feature in the writing style
+        6. Be 4-5 sentences long
+        7. Do not include any closing remarks like '올림' or 'Sincerely'
+
+        Do not include any explanations or additional text. Write only the letter content.
+        """
+
+        return self.generate_letter(prompt, receiver, sender, max_tokens=250)

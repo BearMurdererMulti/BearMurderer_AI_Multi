@@ -94,3 +94,16 @@ async def generate_alibis_and_witness(request: Request, game_data: game_schema.G
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# 게임을 종료하고 편지를 생성하는 라우터
+@router.post("/end_game", 
+            description="게임을 종료하고 결과에 따른 편지를 생성하는 API입니다.")
+async def end_game(request: Request, game_data: game_schema.GameEndRequest):
+    game_service: GameService = request.app.state.game_service
+    try:
+        result = game_service.end_game(game_data.gameNo, game_data.gameResult)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")

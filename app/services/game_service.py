@@ -152,6 +152,35 @@ class GameService:
         
         return alibis_and_witness
     
+    def end_game(self, gameNo, game_result):
+        if gameNo not in self.game_states:
+            raise ValueError("Game ID not found")
+        
+        game_state = self.game_states[gameNo]
+        scenario_generation = self.scenario_generations[gameNo]
+        lang = game_state["language"]
+        
+        if game_result == "WIN":
+            chief_letter = scenario_generation.generate_chief_win_letter()
+            murderer_letter = scenario_generation.generate_murderer_win_letter()
+            survivors_letters = scenario_generation.generate_survivors_letter()
+            return {
+                "result": "WIN",
+                "chief_letter": chief_letter,
+                "murderer_letter": murderer_letter,
+                "survivors_letters": survivors_letters
+            }
+        elif game_result == "LOSE":
+            chief_letter = scenario_generation.generate_chief_lose_letter()
+            murderer_letter = scenario_generation.generate_murderer_lose_letter()
+            return {
+                "result": "LOSE",
+                "chief_letter": chief_letter,
+                "murderer_letter": murderer_letter
+            }
+        else:
+            raise ValueError("Invalid game result")
+    
 
     #========================================================================================
 
