@@ -166,17 +166,17 @@ class GameService:
             survivors_letters = scenario_generation.generate_survivors_letter()
             return {
                 "result": "WIN",
-                "chief_letter": chief_letter,
-                "murderer_letter": murderer_letter,
-                "survivors_letters": survivors_letters
+                "chiefLetter": chief_letter,
+                "murdererLetter": murderer_letter,
+                "survivorsLetters": survivors_letters
             }
         elif game_result == "LOSE":
             chief_letter = scenario_generation.generate_chief_lose_letter()
             murderer_letter = scenario_generation.generate_murderer_lose_letter()
             return {
                 "result": "LOSE",
-                "chief_letter": chief_letter,
-                "murderer_letter": murderer_letter
+                "chiefLetter": chief_letter,
+                "murdererLetter": murderer_letter
             }
         else:
             raise ValueError("Invalid game result")
