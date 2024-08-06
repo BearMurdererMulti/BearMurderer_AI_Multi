@@ -400,7 +400,7 @@ class ScenarioGeneration:
         5. Mention how the village trusted and depended on the detective, only to be let down
         6. Suggest that the detective's reputation will be ruined because of this failure
         7. End with a bitter and regretful tone, implying the detective should feel guilty
-        8. Be 5-6 sentences long
+        8. Be 2-3 sentences long
         9. Do not include any closing remarks like '올림' or 'Sincerely'
 
         The letter should make the detective (player) feel responsible and guilty for failing the village.
@@ -414,6 +414,7 @@ class ScenarioGeneration:
         lang = self.game_state["language"]
         murderer = self.game_state["murderer"]
         surviving_npcs = [npc for npc in self.game_state["npcs"] if self.game_state['alive'][npc['name']] and npc != murderer]
+        dead_npcs = [npc for npc in self.game_state["npcs"] if not self.game_state['alive'][npc['name']] and npc != murderer]
         
         letters = []
         for npc in surviving_npcs:
@@ -421,22 +422,45 @@ class ScenarioGeneration:
             personality = get_personality_detail(npc['personality'], self.personalities, lang)
             feature = get_feature_detail(npc['feature'], self.features, lang)
             
-            receiver = "탐정" if lang == "ko" else "Detective"
-            sender = f"{npc_name}" if lang == "ko" else f"{npc_name}"
+            # 25% 확률로 죽은 NPC에게 편지 작성
+            if random.random() < 0.25 and dead_npcs:
+                dead_npc = random.choice(dead_npcs)
+                dead_npc_name = get_name(dead_npc['name'], lang, self.names)
+                receiver = dead_npc_name
+                sender = npc_name
+                prompt = f"""
+                Write a short, deeply emotional letter in {lang} from {npc_name} to the deceased NPC {dead_npc_name}.
+                The writer has the personality trait of being {personality} and the feature of {feature}.
+                The letter should:
+                1. Express profound grief and longing for the deceased friend
+                2. Recall a specific, touching memory or shared experience
+                3. Convey how much the deceased meant to the writer and the community
+                4. Include a heartfelt wish or promise to honor the deceased's memory
+                5. Reflect the writer's unique personality and feature in a subtle way
+                6. Be entirely in {'Korean' if lang == 'ko' else 'English'}
+                7. Be about 1-2 sentences long, each sentence filled with emotion
+                8. Be so poignant that it might move readers to tears
+                9. Do not include any closing remarks like '올림' or 'Sincerely'
+
+                The letter should make the reader feel the depth of the writer's sorrow and the impact of the loss.
+                """
+            else:
+                receiver = "탐정" if lang == "ko" else "Detective"
+                sender = npc_name
+                prompt = f"""
+                Write a short thank you letter in {lang} from {npc_name} to the detective who solved the murder case.
+                The NPC has the personality trait of being {personality} and the feature of {feature}.
+                The letter should:
+                1. Express gratitude and relief
+                2. Mention how the detective's work has affected them personally
+                3. Reflect the NPC's unique personality and feature
+                4. Be entirely in {'Korean' if lang == 'ko' else 'English'}
+                5. Be about 1-2 sentences long
+                6. Do not include any closing remarks like '올림' or 'Sincerely'
+                """
             
-            prompt = f"""
-            Write a thank you letter in {lang} from an NPC named {npc_name} in Bear Town to the detective who solved the murder case.
-            The NPC has the personality trait of being {personality} and the feature of {feature}.
-            The letter should:
-            1. Express gratitude and relief
-            2. Mention how the detective's work has affected them personally
-            3. Reflect the NPC's unique personality and feature
-            4. Be entirely in {'Korean' if lang == 'ko' else 'English'}
-            5. Do not include any closing remarks like '올림' or 'Sincerely'
-            """
-            
-            letter = self.generate_letter(prompt, receiver, sender, max_tokens=300)
-            letters.append({"name": npc_name, "letter": letter})
+            letter = self.generate_letter(prompt, receiver, sender, max_tokens=150)
+            letters.append({"name": sender, "letter": letter})
         
         return letters
 
@@ -452,21 +476,23 @@ class ScenarioGeneration:
         sender = f"{murderer_name}" if lang == "ko" else f"{murderer_name}"
 
         prompt = f"""
-        Task: Write a threatening letter from a caught murderer to the detective who solved the case.
+        Task: Write a provocative and taunting letter from a caught murderer to the detective who solved the case.
         Murderer's name: {murderer_name}
         Murderer's personality: {personality}
         Murderer's unique feature: {feature}
         Language: {"Korean" if lang == "ko" else "English"}
 
         Letter requirements:
-        1. Start with a mocking or taunting greeting
-        2. Express anger at being caught, but also twisted admiration for the detective's skills
-        3. Include at least one explicit threat of future revenge or crime, even from prison
-        4. Suggest knowledge of personal details about the detective or their loved ones
-        5. Create an unsettling and lingering sense of danger
-        6. Be 4-5 sentences long
-        7. Do not include any closing remarks like '올림' or 'Sincerely'
+        1. Start with a mocking, sarcastic greeting that belittles the detective's achievement
+        2. Express fake admiration for the detective's skills, but imply it was mostly luck
+        3. Strongly emphasize the murderer's personality trait ({personality}) and unique feature ({feature}) in a way that shows they are superior to the detective
+        4. Include at least one explicit threat of future revenge or hint at a bigger plan, even from prison
+        5. Taunt the detective by revealing a disturbing detail about the crime that wasn't discovered
+        6. End with a provocative statement that leaves the detective feeling uneasy and doubting their success
+        7. Be 2-3 sentences long, each designed to irritate and unsettle the detective
+        8. Do not include any closing remarks like '올림' or 'Sincerely'
 
+        The letter should make the detective (player) feel angry, unsettled, and questioning their victory.
         Do not include any explanations or additional text. Write only the letter content.
         """
 
@@ -484,21 +510,24 @@ class ScenarioGeneration:
         sender = f"{murderer_name}" if lang == "ko" else f"{murderer_name}"
 
         prompt = f"""
-        Task: Write a mocking letter from an escaped murderer to the detective who failed to solve the case.
+        Task: Write an extremely provocative and mocking letter from an escaped murderer to the detective who failed to solve the case.
         Murderer's name: {murderer_name}
         Murderer's personality: {personality}
         Murderer's unique feature: {feature}
         Language: {"Korean" if lang == "ko" else "English"}
 
         Letter requirements:
-        1. Start with a sarcastic or insulting greeting
-        2. Openly ridicule the detective's failure to catch the murderer
-        3. Boast about outsmarting the detective and escaping justice
-        4. Include at least one taunt about future crimes the detective won't be able to stop
-        5. Reflect the murderer's unique personality and feature in the writing style
-        6. Be 4-5 sentences long
-        7. Do not include any closing remarks like '올림' or 'Sincerely'
+        1. Begin with an overly cheerful, sarcastic greeting that emphasizes the detective's failure
+        2. Openly ridicule the detective's incompetence, using the murderer's personality ({personality}) to make it more insulting
+        3. Boast about outsmarting the detective, incorporating the murderer's unique feature ({feature}) as a key to their success
+        4. Include at least two taunts about future crimes the detective won't be able to stop, making them sound inevitable
+        5. Mock the detective's investigation process, pointing out obvious clues they missed
+        6. Hint at a larger conspiracy or plan that the detective is too incompetent to uncover
+        7. End with a challenge or dare that makes the detective feel powerless and frustrated
+        8. Be 2-3 sentences long, each crafted to maximally provoke and anger the detective
+        9. Do not include any closing remarks like '올림' or 'Sincerely'
 
+        The letter should make the detective (player) feel enraged, humiliated, and desperate to catch the murderer.
         Do not include any explanations or additional text. Write only the letter content.
         """
 
