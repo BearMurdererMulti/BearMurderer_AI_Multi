@@ -99,18 +99,25 @@ class ScenarioGeneration:
 
         if lang == "ko":
             closing_example = "베어 타운 촌장 올림"
+            language_instruction = "한국어로만 작성하세요. 영어 사용을 절대 금지합니다."
         else:
             closing_example = "Sincerely, Village Chief of Bear Town"
+            language_instruction = "Write only in English. Do not use any Korean."
 
         prompt = f"""
-        Write a brief, urgent letter in {lang} from the village chief to a detective, desperately requesting help with solving a recent murder in Bear Town.
-        The letter should be concise but convey a sense of fear, urgency, and desperation. Do not reveal any details about the suspects, the murder weapon, or the location of the murder.
-        Structure the letter in three parts:
-        1. Greeting: A formal but urgent salutation to the detective.
-        2. Content: The main body of the letter explaining the dire situation, the fear gripping the village, and pleading for immediate help. Emphasize the potential for more danger if help doesn't arrive soon.
-        3. Closing: A desperate closing plea, followed by a signature similar to "{closing_example}" but not necessarily identical.
+        {language_instruction}
+        Task: Write a brief, urgent letter from the village chief to a detective, desperately requesting help with solving a recent murder in Bear Town.
+        
+        Requirements:
+        1. The letter must be entirely in {"Korean" if lang == "ko" else "English"}.
+        2. It should be concise but convey a sense of fear, urgency, and desperation.
+        3. Do not reveal any details about the suspects, the murder weapon, or the location of the murder.
+        4. Structure the letter in three parts:
+        a. Greeting: A formal but urgent salutation to the detective.
+        b. Content: The main body explaining the dire situation, the fear gripping the village, and pleading for immediate help. Emphasize the potential for more danger if help doesn't arrive soon.
+        c. Closing: A desperate closing plea, followed by a signature similar to "{closing_example}" but not necessarily identical.
 
-        Return the letter in the following format, without any additional formatting or code blocks:
+        Return the letter in the following JSON format, without any additional formatting or code blocks:
         {{
             "greeting": "Urgent greeting text here",
             "content": "Desperate main content of the letter here",
