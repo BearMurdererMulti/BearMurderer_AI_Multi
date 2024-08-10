@@ -22,20 +22,28 @@ class Interrogation:
         self.places = places
         self.names = names
 
-    def start_interrogation(self, npc_name, weapon):
+    def start_interrogation(self, npc_name, weapon_id):
         npc = next((npc for npc in self.game_state["npcs"] if get_name(npc["name"], self.game_state["language"], self.names) == npc_name), None)
-        weapon_en = next((w['id'] for w in self.weapons if w['weapon']['ko'] == weapon), None)
+        
+        if npc is None:
+            raise ValueError(f"NPC with name {npc_name} not found")
+
+        weapon = next((w for w in self.weapons if w['id'] == weapon_id), None)
+        
+        if weapon is None:
+            raise ValueError(f"Weapon with ID {weapon_id} not found")
 
         heart_rate = 60
-        if weapon_en in npc['preferredWeapons']:
+        if weapon_id in npc['preferredWeapons']:
             heart_rate = 80
 
         self.game_state['interrogation'] = {
             "heart_rate": heart_rate,
             "suspect_name": npc_name,
-            "weapon": weapon,
+            "weapon": weapon_id,  # 무기의 ID를 저장
+            "weapon_name": weapon['weapon'][self.game_state["language"]],  # 현재 언어로 된 무기 이름 저장
             "conversation_history": []
-            }
+        }
 
     def generate_interrogation_response(self, npc_name: str, content: str):
         logger.info(f"▶️  User message received: npc_name: {npc_name}, contents: {content}")
