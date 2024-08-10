@@ -116,12 +116,13 @@ class ScenarioGeneration:
         a. Greeting: A formal but urgent salutation to the detective.
         b. Content: The main body explaining the dire situation, the fear gripping the village, and pleading for immediate help. Emphasize the potential for more danger if help doesn't arrive soon.
         c. Closing: A desperate closing plea, followed by a signature similar to "{closing_example}" but not necessarily identical.
+        5. End each sentence with a newline character (\\n).
 
         Return the letter in the following JSON format, without any additional formatting or code blocks:
         {{
-            "greeting": "Urgent greeting text here",
-            "content": "Desperate main content of the letter here",
-            "closing": "Final plea and signature here"
+            "greeting": "Urgent greeting text here\\n",
+            "content": "First sentence of content.\\nSecond sentence of content.\\nThird sentence of content.\\n",
+            "closing": "Final plea.\\nSignature here\\n"
         }}
         """
 
@@ -132,13 +133,24 @@ class ScenarioGeneration:
 
         try:
             letter_parts = json.loads(chief_letter)
+            
+            # Ensure each part ends with a newline
+            for key in letter_parts:
+                if not letter_parts[key].endswith('\n'):
+                    letter_parts[key] += '\n'
+            
+            # For content, ensure each sentence ends with a newline
+            if 'content' in letter_parts:
+                sentences = re.split(r'(?<=[.!?])\s+', letter_parts['content'])
+                letter_parts['content'] = '\n'.join(sentence.strip() for sentence in sentences if sentence.strip()) + '\n'
+            
         except json.JSONDecodeError:
             # If parsing fails, we'll use a simple split method as fallback
             parts = chief_letter.split("\n")
             letter_parts = {
-                "greeting": parts[0] if len(parts) > 0 else "",
-                "content": " ".join(parts[1:-1]) if len(parts) > 2 else "",
-                "closing": parts[-1] if len(parts) > 1 else closing_example
+                "greeting": parts[0] + '\n' if parts else "",
+                "content": '\n'.join(parts[1:-1]) + '\n' if len(parts) > 2 else "",
+                "closing": parts[-1] + '\n' if len(parts) > 1 else closing_example + '\n'
             }
 
         return letter_parts
@@ -280,8 +292,8 @@ class ScenarioGeneration:
 
         lang = self.game_state["language"]
         victim_name = get_name(self.game_state["murdered_npc"]["name"], lang, self.names)
-        crime_scene = get_location_name(self.game_state["murder_location"], self.places, lang)
-        murder_weapon = get_weapon_name(self.game_state["murder_weapon"], self.weapons, lang)
+        crime_scene = self.game_state["murder_location"]  # 영어 ID 반환
+        murder_weapon = self.game_state["murder_weapon"]  # 영어 ID 반환
 
         daily_summary = f"day {self.game_state['current_day']} - {crime_scene}에서 {victim_name}이(가) {murder_weapon}에 의해 살해됨."
 
@@ -341,8 +353,8 @@ class ScenarioGeneration:
     def get_first_blood(self):
         lang = self.game_state["language"]
         victim_name = get_name(self.game_state['murdered_npc']["name"], lang, self.names)
-        crime_scene = get_location_name(self.game_state["murder_location"], self.places, lang)
-        murder_weapon = get_weapon_name(self.game_state["murder_weapon"], self.weapons, lang)
+        crime_scene = self.game_state["murder_location"]  # 영어 ID 반환
+        murder_weapon = self.game_state["murder_weapon"]  # 영어 ID 반환
 
         result = {
             "victim": victim_name,
