@@ -1,5 +1,6 @@
 import random
 import json
+import re
 from app.utils.gpt_helper import get_gpt_response
 from app.utils.memory import add_conversation, get_conversation_chain
 from app.utils.game_utils import (
@@ -74,16 +75,35 @@ class Interrogation:
         )
 
         response_content = get_gpt_response(response_prompt, max_tokens=150)
-        response = json.loads(response_content)
-
-
+    
+        # JSON 파싱 시도
+        try:
+            response = json.loads(response_content)
+        except json.JSONDecodeError:
+            # JSON 파싱에 실패한 경우, 정규 표현식을 사용하여 필요한 정보 추출
+            response_match = re.search(r'"response"\s*:\s*"(.+?)"', response_content)
+            delta_match = re.search(r'"heartRateDelta"\s*:\s*(-?\d+)', response_content)
+            
+            if response_match and delta_match:
+                response = {
+                    "response": response_match.group(1),
+                    "heartRateDelta": int(delta_match.group(1))
+                }
+            else:
+                # 정규 표현식으로도 추출 실패 시 기본값 설정
+                response = {
+                    "response": "미안해. 무슨 말인지 모르겠어.",
+                    "heartRateDelta": 0
+                }
+        
+        # 심박수 변화 적용
         current_heart_rate += int(response['heartRateDelta'])
-        current_heart_rate = 130 if current_heart_rate > 130 else current_heart_rate
-        current_heart_rate = 60 if current_heart_rate < 60 else current_heart_rate
+        current_heart_rate = min(max(current_heart_rate, 60), 130)
         self.game_state['interrogation']['heart_rate'] = current_heart_rate
 
+        # 대화 기록 추가
         conversation_history.append({"role": "user", "content": content})
-        conversation_history.append({"role": npc_name, "content": response_content})
+        conversation_history.append({"role": npc_name, "content": response['response']})
 
         logger.info(f"▶️  Bot response sent: npc_name: {npc_name}, heart_rate: {current_heart_rate}, response: {response['response']}")
         return {"response": response['response'], "heartRate": current_heart_rate}
