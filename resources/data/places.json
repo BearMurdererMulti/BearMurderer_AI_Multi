@@ -1,18 +1,21 @@
 {
     "places": [
-        {"id": "Park", "place": {"en": "Park", "ko": "공원"}},
-        {"id": "Alley", "place": {"en": "Alley", "ko": "골목"}},
-        {"id": "Forest", "place": {"en": "Forest", "ko": "숲"}},
-        {"id": "House", "place": {"en": "House", "ko": "집"}},
-        {"id": "Store", "place": {"en": "Store", "ko": "상점"}},
-        {"id": "Office", "place": {"en": "Office", "ko": "사무실"}},
-        {"id": "Cafe", "place": {"en": "Cafe", "ko": "카페"}},
-        {"id": "Salon", "place": {"en": "Salon", "ko": "미용실"}},
-        {"id": "Hotel", "place": {"en": "Hotel", "ko": "호텔"}},
-        {"id": "Train", "place": {"en": "Train", "ko": "기차역"}},
-        {"id": "Beach", "place": {"en": "Beach", "ko": "해변"}},
+        {"id": "MiskShop", "place": {"en": "MiskShop", "ko": "잡화샵"}},
+        {"id": "PawnShop", "place": {"en": "PawnShop", "ko": "전당포"}},
         {"id": "Bank", "place": {"en": "Bank", "ko": "은행"}},
-        {"id": "Library", "place": {"en": "Library", "ko": "도서관"}},
-        {"id": "LeftTree", "place": {"en": "LeftTree", "ko": "서쪽 마을 나무 밑"}}
+        {"id": "Beach", "place": {"en": "Beach", "ko": "해변"}},
+        {"id": "UnderPig", "place": {"en": "UnderPig", "ko": "돼지 우리"}},
+        {"id": "UnderBridge", "place": {"en": "UnderBridge", "ko": "남쪽 다리"}},
+        {"id": "LeftTree", "place": {"en": "LeftTree", "ko": "서쪽 마을 나무 밑"}},
+        {"id": "LeftSea", "place": {"en": "LeftSea", "ko": "서쪽 바다"}},
+        {"id": "LeftRock", "place": {"en": "LeftRock", "ko": "서쪽 바다의 거대한 돌"}},
+        {"id": "Flower", "place": {"en": "Flower", "ko": "꽃 가게"}},
+        {"id": "ConvenienceStore", "place": {"en": "ConvenienceStore", "ko": "편의점"}},
+        {"id": "Hotel", "place": {"en": "Hotel", "ko": "호텔"}},
+        {"id": "RealEstateAgancy", "place": {"en": "RealEstateAgancy", "ko": "부동산"}},
+        {"id": "Salon", "place": {"en": "Salon", "ko": "미용실"}},
+        {"id": "Police", "place": {"en": "Police", "ko": "경찰서"}},
+        {"id": "Cafe", "place": {"en": "Cafe", "ko": "카페"}},
+        {"id": "Train", "place": {"en": "Train", "ko": "기차역"}}
     ]
 }
