@@ -11,7 +11,7 @@ from pydantic import BaseModel
 class NewInterRequest(BaseModel):
     gameNo: int
     npcName: str = "박동식"
-    weapon: str = "독약"
+    weapon: str | None = None
 
 class NewInterResponse(BaseModel):
     message: str
