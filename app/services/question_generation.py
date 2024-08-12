@@ -1,4 +1,5 @@
 import random
+import re
 from app.utils.gpt_helper import get_gpt_response
 from app.utils.memory import add_conversation, get_conversation_chain
 from app.utils.game_utils import (
@@ -52,10 +53,11 @@ class QuestionGeneration:
         if keyword and keyword_type:
             # 키워드가 무기 일때
             if keyword_type == "weapon":
+                weapon_name = get_weapon_name(keyword, self.weapons, lang)
                 weapon_question_prompt = (
                     f"Generate a concise question in {lang} for a player to ask an NPC named {npc_name} with the personality '{personality['personality'][lang]}' "
                     f"and feature '{feature['feature'][lang]}'. The NPC is a suspect in the following scenario: {scenario_description}. "
-                    f"Ask them about their knowledge or possession of the weapon '{keyword}'."
+                    f"Ask them about their knowledge or possession of the weapon '{weapon_name}'."
                 )
                 location_question_prompt = (
                     f"Generate a concise question in {lang} for a player to ask an NPC named {npc_name} with the personality '{personality['personality'][lang]}' "
@@ -64,10 +66,11 @@ class QuestionGeneration:
                 )
             # 키워드가 장소 일때
             elif keyword_type == "place":
+                location_name = get_location_name(keyword, self.places, lang)
                 location_question_prompt = (
                     f"Generate a concise question in {lang} for a player to ask an NPC named {npc_name} with the personality '{personality['personality'][lang]}' "
                     f"and feature '{feature['feature'][lang]}'. The NPC is a suspect in the following scenario: {scenario_description}. "
-                    f"Ask them about their connection to the location '{keyword}'."
+                    f"Ask them about their connection to the location '{location_name}'."
                 )
                 weapon_question_prompt = (
                     f"Generate a concise question in {lang} for a player to ask an NPC named {npc_name} with the personality '{personality['personality'][lang]}' "
@@ -87,9 +90,9 @@ class QuestionGeneration:
                 f"Ask them about their preferred locations."
             )
 
-        alibi_question = get_gpt_response(alibi_question_prompt, max_tokens=80)
-        weapon_question = get_gpt_response(weapon_question_prompt, max_tokens=80)
-        location_question = get_gpt_response(location_question_prompt, max_tokens=80)
+        alibi_question = self.clean_response(get_gpt_response(alibi_question_prompt, max_tokens=80))
+        weapon_question = self.clean_response(get_gpt_response(weapon_question_prompt, max_tokens=80))
+        location_question = self.clean_response(get_gpt_response(location_question_prompt, max_tokens=80))
 
         questions = [
             {"number": 1, "question": alibi_question},
@@ -108,7 +111,8 @@ class QuestionGeneration:
         question = self.game_state["current_questions"][question_index - 1]["question"]
         conversation_chain = get_conversation_chain()
 
-        npc = next((npc for npc in self.game_state["npcs"] if get_name(npc["name"], self.game_state["language"], self.names) == npc_name), None)
+        lang = self.game_state["language"]
+        npc = next((npc for npc in self.game_state["npcs"] if get_name(npc["name"], lang, self.names) == npc_name), None)
         if not npc:
             raise ValueError("NPC not found")
 
@@ -119,59 +123,75 @@ class QuestionGeneration:
 
         # 범행 도구에 대한 질문이고 키워드가 무기 일때
         if question_index == 2 and keyword and keyword_type == "weapon":
+            weapon_name = get_weapon_name(keyword, self.weapons, lang)
             # 키워드가 NPC의 선호하는 무기 중 하나일 경우 그 무기에 대한 대답을 생성
-            if any(get_weapon_name(wpn, self.weapons, self.game_state["language"]) == keyword for wpn in npc["preferredWeapons"]):
+            if keyword in npc["preferredWeapons"]:
                 response_prompt = (
-                    f"Generate a concise response in {self.game_state['language']} for an NPC named {npc_name} with the personality '{npc['personality']}' "
-                    f"and feature '{npc['feature']}'. The NPC is asked about the weapon '{keyword}' which they like and use often. The response should clearly indicate their preference for this weapon."
+                    f"Generate a concise response in {lang} for an NPC named {npc_name} with the personality '{npc['personality']}' "
+                    f"and feature '{npc['feature']}'. The NPC is asked about the weapon '{weapon_name}' which they like and use often. The response should clearly indicate their preference for this weapon."
                 )
             # 키워드가 NPC의 선호하는 무기 중 하나가 아닐 경우 그 무기에 대한 대답을 생성
             else:
                 response_prompt = (
-                    f"Generate a concise response in {self.game_state['language']} for an NPC named {npc_name} with the personality '{npc['personality']}' "
-                    f"and feature '{npc['feature']}'. The NPC is asked about the weapon '{keyword}' which they dislike or rarely use. The response should clearly indicate their lack of preference for this weapon."
+                    f"Generate a concise response in {lang} for an NPC named {npc_name} with the personality '{npc['personality']}' "
+                    f"and feature '{npc['feature']}'. The NPC is asked about the weapon '{weapon_name}' which they dislike or rarely use. The response should clearly indicate their lack of preference for this weapon."
                 )
         # 범행 장소에 대한 질문이고 키워드가 장소 일때
         elif question_index == 3 and keyword and keyword_type == "place":
+            location_name = get_location_name(keyword, self.places, lang)
             # 키워드가 NPC의 선호하는 장소 중 하나일 경우 그 장소에 대한 대답을 생성
-            if any(get_location_name(loc, self.places, self.game_state["language"]) == keyword for loc in npc["preferredLocations"]):
+            if keyword in npc["preferredLocations"]:
                 response_prompt = (
-                    f"Generate a concise response in {self.game_state['language']} for an NPC named {npc_name} with the personality '{npc['personality']}' "
-                    f"and feature '{npc['feature']}'. The NPC is asked about the location '{keyword}' which they like and visit often. The response should clearly indicate their preference for this place."
+                    f"Generate a concise response in {lang} for an NPC named {npc_name} with the personality '{npc['personality']}' "
+                    f"and feature '{npc['feature']}'. The NPC is asked about the location '{location_name}' which they like and visit often. The response should clearly indicate their preference for this place."
                 )
             # 키워드가 NPC의 선호하는 장소 중 하나가 아닐 경우 그 장소에 대한 대답을 생성
             else:
                 response_prompt = (
-                    f"Generate a concise response in {self.game_state['language']} for an NPC named {npc_name} with the personality '{npc['personality']}' "
-                    f"and feature '{npc['feature']}'. The NPC is asked about the location '{keyword}' which they dislike or rarely visit. The response should clearly indicate their lack of preference for this place."
+                    f"Generate a concise response in {lang} for an NPC named {npc_name} with the personality '{npc['personality']}' "
+                    f"and feature '{npc['feature']}'. The NPC is asked about the location '{location_name}' which they dislike or rarely visit. The response should clearly indicate their lack of preference for this place."
                 )
         else:
             # 범행 장소에 대한 질문이고 키워드가 없을 때나 키워드가 범행 도구일 경우 선호하는 장소 중 하나를 선택하여 응답하도록 함
             if question_index == 3 and (not keyword or keyword_type == "weapon"):
                 preferred_location = random.choice(npc["preferredLocations"])
+                preferred_location_name = get_location_name(preferred_location, self.places, lang)
                 response_prompt = (
-                    f"Generate a concise response in {self.game_state['language']} for an NPC named {npc_name} with the personality '{npc['personality']}' "
+                    f"Generate a concise response in {lang} for an NPC named {npc_name} with the personality '{npc['personality']}' "
                     f"and feature '{npc['feature']}'. The NPC is asked about their preferred locations. "
-                    f"The response should include their preference for '{get_location_name(preferred_location, self.places, self.game_state['language'])}'."
+                    f"The response should include their preference for '{preferred_location_name}'."
                 )
             # 범행 도구에 대한 질문이고 키워드가 없을 때나 키워드가 범행 장소일 경우 선호하는 무기 중 하나를 선택하여 응답하도록 함
             elif question_index == 2 and (not keyword or keyword_type == "place"):
                 preferred_weapon = random.choice(npc["preferredWeapons"])
+                preferred_weapon_name = get_weapon_name(preferred_weapon, self.weapons, lang)
                 response_prompt = (
-                    f"Generate a concise response in {self.game_state['language']} for an NPC named {npc_name} with the personality '{npc['personality']}' "
+                    f"Generate a concise response in {lang} for an NPC named {npc_name} with the personality '{npc['personality']}' "
                     f"and feature '{npc['feature']}'. The NPC is asked about their preferred weapons. "
-                    f"The response should include their preference for '{get_weapon_name(preferred_weapon, self.weapons, self.game_state['language'])}'."
+                    f"The response should include their preference for '{preferred_weapon_name}'."
                 )
             else:
                 # 그 외의 경우에는 일반적인 대화를 생성
                 response_prompt = (
-                    f"Generate a concise response in {self.game_state['language']} for an NPC named {npc_name} with the personality '{npc['personality']}' "
+                    f"Generate a concise response in {lang} for an NPC named {npc_name} with the personality '{npc['personality']}' "
                     f"and feature '{npc['feature']}'. The NPC is asked: '{question}'. The response should clearly indicate their personality and feature."
                 )
 
-        response_content = get_gpt_response(response_prompt, max_tokens=150)
+        response_content = self.clean_response(get_gpt_response(response_prompt, max_tokens=150))
 
         add_conversation(question, response_content)
         self.game_state["conversations_left"] -= 1
 
         return response_content
+
+    def clean_response(self, response):
+        # 쌍따옴표 제거
+        response = response.replace('"', '')
+        
+        # NPC 이름과 콜론 제거 (예: "태근티비: " 제거)
+        response = re.sub(r'^[^:]+:\s*', '', response)
+        
+        # 앞뒤 공백 제거
+        response = response.strip()
+        
+        return response
