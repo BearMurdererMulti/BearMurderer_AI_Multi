@@ -31,6 +31,7 @@ class Interrogation:
 
         weapon = next((w for w in self.weapons if w['id'] == weapon_id), None) if weapon_id else None
         
+        weapon_name = weapon['weapon'][self.game_state["language"]] if weapon_id else None
         # if weapon is None:
         #     raise ValueError(f"Weapon with ID {weapon_id} not found")
 
@@ -42,7 +43,7 @@ class Interrogation:
             "heart_rate": heart_rate,
             "suspect_name": npc_name,
             "weapon": weapon_id,  # 무기의 ID를 저장
-            "weapon_name": weapon['weapon'][self.game_state["language"]],  # 현재 언어로 된 무기 이름 저장
+            "weapon_name": weapon_name,  # 현재 언어로 된 무기 이름 저장
             "conversation_history": []
         }
 
