@@ -29,10 +29,10 @@ class Interrogation:
         if npc is None:
             raise ValueError(f"NPC with name {npc_name} not found")
 
-        weapon = next((w for w in self.weapons if w['id'] == weapon_id), None)
+        weapon = next((w for w in self.weapons if w['id'] == weapon_id), None) if weapon_id else None
         
-        if weapon is None:
-            raise ValueError(f"Weapon with ID {weapon_id} not found")
+        # if weapon is None:
+        #     raise ValueError(f"Weapon with ID {weapon_id} not found")
 
         heart_rate = 60
         if weapon_id in npc['preferredWeapons']:
